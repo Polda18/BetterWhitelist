@@ -1,6 +1,5 @@
 # BetterWhitelist
 A Minecraft Spigot plugin for better whitelist
-----
 
 ## Introduction
 This plugin is fairly simple. It implements its own whitelist as opposed
