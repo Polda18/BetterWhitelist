@@ -1,0 +1,53 @@
+#-----------------------------------------------------------------
+# ______      _   _            _    _ _     _ _       _ _     _
+# | ___ \    | | | |          | |  | | |   (_) |     | (_)   | |
+# | |_/ / ___| |_| |_ ___ _ __| |  | | |__  _| |_ ___| |_ ___| |_
+# | ___ \/ _ \ __| __/ _ \ '__| |/\| | '_ \| | __/ _ \ | / __| __|
+# | |_/ /  __/ |_| ||  __/ |  \  /\  / | | | | ||  __/ | \__ \ |_
+# \____/ \___|\__|\__\___|_|   \/  \/|_| |_|_|\__\___|_|_|___/\__|
+#
+#
+#-----------------------------------------------------------------
+
+# Language specification
+name: 'Čeština'
+
+# Different messages that are translatable
+# You can use colors denoted by "&" character and a hexadecimal
+# number ranging from 0-9 and a-f, or a letter signaling format:
+# &0 - black             &8 - dark gray
+# &1 - dark blue         &9 - blue
+# &2 - dark green        &a - green
+# &3 - dark aqua         &b - aqua
+# &4 - dark red          &c - red
+# &5 - dark purple       &d - purple/pink
+# &6 - gold              &e - yellow
+# &7 - gray              &f - white
+#-----------------------------------------------------------------
+# &l - bold              &n - underline
+# &o - italic            &r - reset color and format
+
+# You can also use these variables:
+# (player) - refers to operated player
+# (uuid) - refers to eighter online or offline UUID (depends on usage)
+# (language) - refers to currently selected language
+# Note: If server runs in Offline mode, the online UUID resolves to null
+messages:
+  disabled: '&cWhitelist vypnut.'
+  enabled: '&aWhitelist zapnut.'
+  added: '&7Hráč &e(player) &apřidán &7do whitelistu.'
+  removed: '&7Hráč &e(player) &codebrán &7z whitelistu.'
+  uuid:
+    online: '&8- &aOnline &7UUID: &e(uuid)'
+    offline: '&8- &cOffline &7UUID: &e(uuid)'
+  language: '&aJazyk &e(language) &anastaven'
+  reload: '&aKonfigurace znovu načtena'
+  error:
+    not-found:
+      in-whitelist: '&cHráč &e(player) &cnebyl ve whitelistu nalezen.'
+      in-mojang: '&cHráč &e(player) &czřejmě neexistuje v uživatelské databázi Mojangu.'
+    permission: '&cPardon, ale na toto nemáš oprávnění.'
+  usage:
+    | &7Použití: /bw &a<on|off|add|remove> &e[playername]
+    | &8&o  - &6on|off &5&o=> zapíná nebo vypíná whitelist
+    | &8&o  - &6add|remove &5&o=> přidává nebo odebírá hráče do whitelistu

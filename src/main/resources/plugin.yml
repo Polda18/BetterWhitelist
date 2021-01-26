@@ -1,0 +1,9 @@
+name: BetterWhitelist
+version: ${project.version}
+main: me.polda18.betterwhitelist.BetterWhitelist
+api-version: 1.16
+prefix: BetterWhitelist
+load: STARTUP
+authors: [CZghost]
+description: A Minecraft Spigot plugin for better whitelist
+website: https://polda18.github.io/BetterWhitelist
