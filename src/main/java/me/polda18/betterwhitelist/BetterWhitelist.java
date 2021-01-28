@@ -27,6 +27,18 @@ public final class BetterWhitelist extends JavaPlugin {
         }
     }
 
+    public void setWhitelistEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean whitelistIsEnabled() {
+        return this.enabled;
+    }
+
+    public Whitelist getWhitelist() {
+        return this.whitelist;
+    }
+
     public Language getLanguage() {
         return this.languages.get(lang_code);
     }
@@ -63,6 +75,11 @@ public final class BetterWhitelist extends JavaPlugin {
 
         this.enabled = this.getConfig().getBoolean("enabled", false);
         this.lang_code = this.getConfig().getString("language", "en");
+
+        // Get whitelist
+        File wl_file = new File(this.getDataFolder(), "whitelist.yml");
+        FileConfiguration wl_config = YamlConfiguration.loadConfiguration(wl_file);
+        // TODO: Get list of
 
         ArrayList<Path> language_filenames = new ArrayList<>();
 

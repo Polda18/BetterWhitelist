@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -50,7 +51,7 @@ public class Whitelist {
         return (this.hash_map.remove(player) != null);
     }
 
-    public boolean updateEntry(String player) throws OnlineUUIDException {
+    public boolean addEntry(String player) throws OnlineUUIDException, IOException {
         UUID online_uuid = (Bukkit.getOnlineMode()) ? UUIDConverter.getOnlineUUIDFromPlayerName(player) : null;
         UUID offline_uuid = UUIDConverter.getOfflineUUIDFromPlayerName(player);
 

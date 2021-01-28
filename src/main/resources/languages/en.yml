@@ -43,9 +43,15 @@ messages:
   language: '&aLanguage &e(language) &aenabled'
   reload: '&aConfig reloaded'
   error:
+    whitelist:
+      already-enabled: '&cWhitelist is already enabled.'
+      already-disabled: '&cWhitelist is already disabled.'
+    already-in-whitelist: '&cPlayer &e(player) &cis already in the whitelist.'
     not-found:
       in-whitelist: '&cPlayer &e(player) &cnot found in the whitelist.'
       in-mojang: '&cPlayer &e(player) &cseems non-existent in Mojang user database.'
+    internal: '&cAn internal error occured. Please contact the author of this plugin.'
+    parse: '&cLoaded whitelist is in incorrect format!'
     permission: '&cSorry, you do not have permission to do that.'
   usage:
     | &7Usage: /bw &a<on|off|add|remove> &e[playername]

@@ -17,4 +17,16 @@ public class WhitelistEntry {
         this.online_uuid = online_uuid;
         this.offline_uuid = offline_uuid;
     }
+
+    public String getPlayer() {
+        return player;
+    }
+
+    public UUID getOnline_uuid() {
+        return online_uuid;
+    }
+
+    public UUID getOffline_uuid() {
+        return offline_uuid;
+    }
 }

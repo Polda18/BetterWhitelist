@@ -43,9 +43,15 @@ messages:
   language: '&aJazyk &e(language) &anastaven'
   reload: '&aKonfigurace znovu načtena'
   error:
+    whitelist:
+      already-enabled: '&cWhitelist již je zapnutý.'
+      already-disabled: '&cWhitelist již je vypnutý.'
+    already-in-whitelist: '&cHráč &e(player) &cjiž je ve whitelistu.'
     not-found:
       in-whitelist: '&cHráč &e(player) &cnebyl ve whitelistu nalezen.'
       in-mojang: '&cHráč &e(player) &czřejmě neexistuje v uživatelské databázi Mojangu.'
+    internal: '&cVyskytla se vnitřní chyba. Prosím, kontaktuj autora pluginu.'
+    parse: '&cNačtený whitelist je ve špatném formátu!'
     permission: '&cPardon, ale na toto nemáš oprávnění.'
   usage:
     | &7Použití: /bw &a<on|off|add|remove> &e[playername]
