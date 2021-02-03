@@ -54,6 +54,7 @@ messages:
     parse: '&cLoaded whitelist is in incorrect format!'
     permission: '&cSorry, you do not have permission to do that.'
   usage:
-    | &7Usage: /bw &a<on|off|add|remove> &e[playername]
-    | &8&o  - &6on|off &5&o=> turns whitelist on and off
-    | &8&o  - &6add|remove &5&o=> adds or removes player to whitelist
+    - '&7Usage: /bw &a<on|off|add|remove|reload> &e[playername]'
+    - '&8&o  - &6on|off &5&o=> &7turns whitelist on and off'
+    - '&8&o  - &6add|remove &5&o=> &7adds or removes player to whitelist'
+    - '&8&o  - &6reload &5=> &7reloads config and whitelist'

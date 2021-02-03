@@ -7,3 +7,19 @@ load: STARTUP
 authors: [CZghost]
 description: A Minecraft Spigot plugin for better whitelist
 website: https://polda18.github.io/BetterWhitelist
+commands:
+  betterwhitelist:
+    description: Manages whitelist
+    aliases: [bw]
+    usage: /<command> [add|remove|on|off] (player)
+    # permission: betterwhitelist.execute
+    # permission-message: You do not have permission to use this command.
+permissions:
+  betterwhitelist.execute:
+    description: Allows you to execute betterwhitelist command.
+    default: op
+  betterwhitelist.*:
+    description: Wildcard permission - allows you to execute betterwhitelist command.
+    default: op
+    children:
+      betterwhitelist.execute: true

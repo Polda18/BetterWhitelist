@@ -1,5 +1,6 @@
 package me.polda18.betterwhitelist;
 
+import me.polda18.betterwhitelist.commands.WhitelistCommand;
 import me.polda18.betterwhitelist.config.Language;
 import me.polda18.betterwhitelist.config.Whitelist;
 import org.bukkit.ChatColor;
@@ -63,6 +64,9 @@ public final class BetterWhitelist extends JavaPlugin {
         this.getLogger().log(Level.INFO, "\\____/ \\___|\\__|\\__\\___|_|   \\/  \\/|_| |_|_|\\__\\___|_|_|___/\\__|");
         this.getLogger().log(Level.INFO, "");
         this.getLogger().log(Level.INFO, "");
+
+        // Register new command
+        this.getCommand("betterwhitelist").setExecutor(new WhitelistCommand(this));
 
         // Get default configurations from resources if non-existent
         this.getLogger().log(Level.INFO, "Loading config...");

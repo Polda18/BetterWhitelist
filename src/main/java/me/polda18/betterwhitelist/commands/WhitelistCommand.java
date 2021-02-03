@@ -13,8 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.logging.Level;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class WhitelistCommand implements CommandExecutor {
@@ -22,6 +21,15 @@ public class WhitelistCommand implements CommandExecutor {
 
     public WhitelistCommand(BetterWhitelist plugin) {
         this.plugin = plugin;
+    }
+
+    private void getUsage(CommandSender sender) {
+        ArrayList<String> usage = (ArrayList<String>) plugin.getLanguage().getConfig().getStringList("messages.usage");
+
+        for (String line :
+                usage) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
+        }
     }
 
     @Override
@@ -42,8 +50,7 @@ public class WhitelistCommand implements CommandExecutor {
 
         if(args.length < 1) {
             // Just a command alone is sent - display usage
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        plugin.getLanguage().getConfig().getString("messages.usage")));
+            this.getUsage(sender);
         } else {
             // Resolve subcommands and their arguments
             switch(args[0]) {
@@ -79,10 +86,9 @@ public class WhitelistCommand implements CommandExecutor {
                     // Add player to whitelist
                     if(args.length < 2) {
                         // Player not specified
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                plugin.getLanguage().getConfig().getString("messages.usage")));
+                        this.getUsage(sender);
                     } else {
-                        if(plugin.getWhitelist().getEntry(args[1]) == null) {
+                        if(plugin.getWhitelist().getEntry(args[1]) != null) {
                             // Player is already in whitelist
                             String msg = plugin.getLanguage().getConfig().getString("messages.error.already-in-whitelist");
                             msg.replace("(player)", args[1]);
@@ -109,31 +115,23 @@ public class WhitelistCommand implements CommandExecutor {
                                 StringBuilder json_builder = new StringBuilder();
                                 if(!file.exists()) {
                                     file.createNewFile();
-                                    json_builder.append("[]").append("\n");
+                                    json_builder.append("{}").append("\n");
                                 } else {
-                                    try (Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8)) {
-                                        stream.forEach(s -> json_builder.append(s).append("\n"));
-                                    } catch (IOException e) {
-                                        // An exception occured
-                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                                plugin.getLanguage().getConfig().getString("messages.error.internal")));
-                                        e.printStackTrace();
-                                    }
+                                    Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8);
+                                    stream.forEach(s -> json_builder.append(s).append("\n"));
                                 }
 
                                 JsonParser parser = new JsonParser();
                                 JsonElement whitelist = parser.parse(json_builder.toString());
-                                if(!(whitelist instanceof JsonArray)) {
+                                if(!(whitelist instanceof JsonObject)) {
                                     throw new JsonParseException("Loaded whitelist is in incorrect format");
                                 }
 
                                 JsonObject definition = new JsonObject();
                                 definition.addProperty("online_uuid", uuid_online);
                                 definition.addProperty("offline_uuid", uuid_offline);
-                                JsonObject person = new JsonObject();
-                                person.add(player, definition);
+                                ((JsonObject) whitelist).add(player, definition);
 
-                                ((JsonArray) whitelist).add(person);
                                 Files.writeString(file.toPath(), whitelist.toString());
                             } catch (IOException e) {
                                 // An internal error occured
@@ -155,18 +153,63 @@ public class WhitelistCommand implements CommandExecutor {
                     }
                     break;
                 case "remove":
-                    // TODO: Remove player from whitelist
+                    // Remove player from whitelist
                     if(args.length < 2) {
                         // Player not specified
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                plugin.getLanguage().getConfig().getString("messages.usage")));
+                        this.getUsage(sender);
                     } else {
-                        // TODO: remove player from whitelist
+                        // Remove from whitelist
+                        if(plugin.getWhitelist().getEntry(args[1]) == null) {
+                            // Player specified wasn't found in the whitelist
+                            String msg = plugin.getLanguage().getConfig().getString("messages.error.not-found.in-whitelist");
+                            msg.replace("(player)", args[1]);
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+                        } else {
+                            try {
+                                // Remove from whitelist
+                                plugin.getWhitelist().deleteEntry(args[1]);
+
+                                String player_msg = plugin.getLanguage().getConfig().getString("messages.added");
+                                player_msg.replace("(player)", args[1]);
+
+                                // Save whitelist into JSON data
+                                File file = new File(plugin.getDataFolder(), "whitelist.json");
+                                StringBuilder json_builder = new StringBuilder();
+
+                                if(!file.exists()) {
+                                    throw new IOException("Whitelist JSON file is missing!");
+                                } else {
+                                    Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8);
+                                    stream.forEach(s -> json_builder.append(s).append("\n"));
+                                }
+
+                                JsonParser parser = new JsonParser();
+                                JsonElement whitelist = parser.parse(json_builder.toString());
+                                if(!(whitelist instanceof JsonObject)) {
+                                    throw new JsonParseException("Loaded whitelist is in incorrect format");
+                                }
+
+                                ((JsonObject) whitelist).remove(args[1]);
+                            } catch (IOException e) {
+                                // An internal error occured
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
+                                e.printStackTrace();
+                            } catch (JsonParseException e) {
+                                // Loaded whitelist is in incorrect format
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.parse")));
+                                e.printStackTrace();
+                            }
+                        }
                     }
+                    break;
+                case "reload":
+                    // TODO: Reload plugin config and whitelist
+                    break;
                 default:
                     // Subcommand not recognized, display usage
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                            plugin.getLanguage().getConfig().getString("messages.usage")));
+                    this.getUsage(sender);
             }
         }
 
