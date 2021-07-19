@@ -1,10 +1,5 @@
 package me.polda18.betterwhitelist.config;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class WhitelistEntry {
@@ -22,11 +17,11 @@ public class WhitelistEntry {
         return player;
     }
 
-    public UUID getOnline_uuid() {
+    public UUID getOnlineUUID() {
         return online_uuid;
     }
 
-    public UUID getOffline_uuid() {
+    public UUID getOfflineUUID() {
         return offline_uuid;
     }
 }

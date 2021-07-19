@@ -1,7 +1,9 @@
 package me.polda18.betterwhitelist.commands;
 
 import com.google.gson.*;
+import com.sun.jdi.InternalException;
 import me.polda18.betterwhitelist.BetterWhitelist;
+import me.polda18.betterwhitelist.utils.InvalidEntryException;
 import me.polda18.betterwhitelist.utils.OnlineUUIDException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -99,8 +101,8 @@ public class WhitelistCommand implements CommandExecutor {
                                 plugin.getWhitelist().addEntry(args[1]);
 
                                 String player = args[1];
-                                String uuid_online = plugin.getWhitelist().getEntry(args[1]).getOnline_uuid().toString();
-                                String uuid_offline = plugin.getWhitelist().getEntry(args[1]).getOffline_uuid().toString();
+                                String uuid_online = plugin.getWhitelist().getEntry(args[1]).getOnlineUUID().toString();
+                                String uuid_offline = plugin.getWhitelist().getEntry(args[1]).getOfflineUUID().toString();
 
                                 String player_msg = plugin.getLanguage().getConfig().getString("messages.added");
                                 player_msg.replace("(player)", player);
@@ -147,6 +149,10 @@ public class WhitelistCommand implements CommandExecutor {
                                 // Loaded whitelist is in incorrect format
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                         plugin.getLanguage().getConfig().getString("messages.error.parse")));
+                                e.printStackTrace();
+                            } catch (InternalException e) {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
                                 e.printStackTrace();
                             }
                         }
@@ -199,6 +205,10 @@ public class WhitelistCommand implements CommandExecutor {
                                 // Loaded whitelist is in incorrect format
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                         plugin.getLanguage().getConfig().getString("messages.error.parse")));
+                                e.printStackTrace();
+                            } catch (InvalidEntryException e) {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.not-found.in-whitelist")));
                                 e.printStackTrace();
                             }
                         }
