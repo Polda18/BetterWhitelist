@@ -3,11 +3,13 @@ package me.polda18.betterwhitelist;
 import me.polda18.betterwhitelist.commands.WhitelistCommand;
 import me.polda18.betterwhitelist.config.Language;
 import me.polda18.betterwhitelist.config.Whitelist;
+import me.polda18.betterwhitelist.utils.InvalidEntryException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -42,6 +44,14 @@ public final class BetterWhitelist extends JavaPlugin {
 
     public Language getLanguage() {
         return this.languages.get(lang_code);
+    }
+
+    public void setLanguage(String lang_code) throws InvalidEntryException {
+        if(this.languages.get(lang_code) == null) {
+            throw new InvalidEntryException("Language not found");
+        }
+
+        this.lang_code = lang_code;
     }
 
     @Override
@@ -83,7 +93,12 @@ public final class BetterWhitelist extends JavaPlugin {
         // Get whitelist
         File wl_file = new File(this.getDataFolder(), "whitelist.yml");
         FileConfiguration wl_config = YamlConfiguration.loadConfiguration(wl_file);
-        // TODO: Get list of
+        try {
+            this.whitelist = new Whitelist(this, wl_file, wl_config);
+        } catch (InstanceAlreadyExistsException e) {
+            this.getLogger().log(Level.SEVERE, "Multiple instances detected!");
+            e.printStackTrace();
+        }
 
         ArrayList<Path> language_filenames = new ArrayList<>();
 
@@ -110,7 +125,8 @@ public final class BetterWhitelist extends JavaPlugin {
         }
 
         this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
-                this.languages.get(lang_code).getConfig().getString("messages.language")));
+                this.getLanguage().getConfig().getString("messages.language")
+                        .replace("(language)", this.getLanguage().getConfig().getString("name"))));
 
         if(this.enabled) {
             this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
@@ -120,6 +136,17 @@ public final class BetterWhitelist extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.saveConfig();
+
+        try {
+            this.whitelist.getConfig().save(this.whitelist.getFile());
+        } catch (IOException e) {
+            this.getLogger().log(Level.SEVERE, ChatColor.translateAlternateColorCodes('&',
+                    this.languages.get(lang_code).getConfig().getString("messages.error.saving")));
+
+            e.printStackTrace();
+        }
+
         if(this.enabled) {
             this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
                     this.languages.get(this.lang_code).getConfig().getString("messages.disabled")));

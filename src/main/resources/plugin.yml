@@ -11,9 +11,9 @@ commands:
   betterwhitelist:
     description: Manages whitelist
     aliases: [bw]
-    usage: /<command> [add|remove|on|off] (player)
-    # permission: betterwhitelist.execute
-    # permission-message: You do not have permission to use this command.
+    usage: /<command> [add|remove|on|off|lang] (player|lang_code)
+    permission: betterwhitelist.execute
+    permission-message: You do not have permission to use this command.
 permissions:
   betterwhitelist.execute:
     description: Allows you to execute betterwhitelist command.

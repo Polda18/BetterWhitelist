@@ -53,8 +53,11 @@ messages:
     internal: '&cAn internal error occured. Please contact the author of this plugin.'
     parse: '&cLoaded whitelist is in incorrect format!'
     permission: '&cSorry, you do not have permission to do that.'
+    saving: '&cWhitelist failed to save on disk. Make sure to check permissions for writing.'
+    language: '&cSelected language not available.'
   usage:
-    - '&7Usage: /bw &a<on|off|add|remove|reload> &e[playername]'
+    - '&7Usage: /bw &a<on|off|add|remove|reload> &e[entry]'
     - '&8&o  - &6on|off &5&o=> &7turns whitelist on and off'
-    - '&8&o  - &6add|remove &5&o=> &7adds or removes player to whitelist'
+    - '&8&o  - &6add|remove &e<playername> &5&o=> &7adds or removes player to whitelist'
     - '&8&o  - &6reload &5=> &7reloads config and whitelist'
+    - '&8&o  - &6lang &e[lang_code] &5=> &7set a language'

@@ -3,9 +3,9 @@ package me.polda18.betterwhitelist.config;
 import java.util.UUID;
 
 public class WhitelistEntry {
-    String player;
-    UUID online_uuid;
-    UUID offline_uuid;
+    private String player;
+    private UUID online_uuid;
+    private UUID offline_uuid;
 
     public WhitelistEntry(String player, UUID online_uuid, UUID offline_uuid) {
         this.player = player;

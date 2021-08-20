@@ -31,9 +31,18 @@ public class UUIDConverter {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonS, JsonObject.class);
 
-        // Get the ID
-        return UUID.fromString((jsonObject.get("id").isJsonNull() || jsonObject.get("id").getAsString().equals(""))
-                ? null : jsonObject.get("id").getAsString());
+        // Get the UUID from the JSON object
+        String uuid_s = (jsonObject.get("id").isJsonNull() || jsonObject.get("id").getAsString().equals(""))
+                ? null : jsonObject.get("id").getAsString();
+
+        // If null, return null
+        if(uuid_s == null) {
+            return null;
+        }
+
+        // Return the UUID in correct form
+        return UUID.fromString(new StringBuilder(uuid_s).insert(8, '-').insert(13, '-')
+                .insert(18, '-').insert(23, '-').toString());
     }
 
     public static UUID getOfflineUUIDFromPlayerName(String player) {
