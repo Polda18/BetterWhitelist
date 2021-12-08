@@ -1,7 +1,7 @@
 name: BetterWhitelist
 version: ${project.version}
 main: me.polda18.betterwhitelist.BetterWhitelist
-api-version: 1.16
+api-version: 1.18
 prefix: BetterWhitelist
 load: STARTUP
 authors: [CZghost]
@@ -11,7 +11,7 @@ commands:
   betterwhitelist:
     description: Manages whitelist
     aliases: [bw]
-    usage: /<command> [add|remove|on|off|lang] (player|lang_code)
+    usage: /<command> (arguments)
     permission: betterwhitelist.execute
     permission-message: You do not have permission to use this command.
 permissions:

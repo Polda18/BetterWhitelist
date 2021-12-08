@@ -9,6 +9,11 @@ public class Language {
     private FileConfiguration config;
     private File file;
 
+    public static final String[] DEFAULT_LANGUAGE_FILES = {
+            "cs.yml",
+            "en.yml"
+    };
+
     public Language(String code, FileConfiguration config, File file) {
         this.code = code;
         this.config = config;

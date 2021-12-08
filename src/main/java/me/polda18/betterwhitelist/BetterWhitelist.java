@@ -1,5 +1,6 @@
 package me.polda18.betterwhitelist;
 
+import me.polda18.betterwhitelist.commands.Autocomplete;
 import me.polda18.betterwhitelist.commands.WhitelistCommand;
 import me.polda18.betterwhitelist.config.Language;
 import me.polda18.betterwhitelist.config.Whitelist;
@@ -13,8 +14,7 @@ import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.logging.Level;
 
 public final class BetterWhitelist extends JavaPlugin {
@@ -30,6 +30,16 @@ public final class BetterWhitelist extends JavaPlugin {
         }
     }
 
+    public Map<String, String> listAvailableLanguages() {
+        Map<String, String> available_languages = new HashMap<>();
+
+        for(String lang_code : languages.keySet()) {
+            available_languages.put(lang_code, languages.get(lang_code).getConfig().getString("name"));
+        }
+
+        return available_languages;
+    }
+
     public void setWhitelistEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -43,6 +53,17 @@ public final class BetterWhitelist extends JavaPlugin {
     }
 
     public Language getLanguage() {
+        Language language = this.languages.get(lang_code);
+
+        if(language == null) {
+            this.lang_code = "en";
+            this.getConfig().set("language", "en");
+            this.saveConfig();
+
+            this.getLogger().log(Level.WARNING,
+                    "Language specified inside config wasn't found, reverting back to English");
+        }
+
         return this.languages.get(lang_code);
     }
 
@@ -77,6 +98,7 @@ public final class BetterWhitelist extends JavaPlugin {
 
         // Register new command
         this.getCommand("betterwhitelist").setExecutor(new WhitelistCommand(this));
+        this.getCommand("betterwhitelist").setTabCompleter(new Autocomplete(this));
 
         // Get default configurations from resources if non-existent
         this.getLogger().log(Level.INFO, "Loading config...");
@@ -116,10 +138,12 @@ public final class BetterWhitelist extends JavaPlugin {
             this.getLogger().log(Level.SEVERE, "An error occured. Make sure languages directory is accessible.", x);
         }
 
-        for(Path filepath : (Path[]) language_filenames.toArray()) {
-            File file = new File(filepath.toString());
+        Iterator<Path> languages_iter = language_filenames.iterator();
+
+        while(languages_iter.hasNext()) {
+            File file = new File(languages_iter.next().toString());
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            String code = file.getName().substring(0, file.getName().indexOf('.'));
+            String code = file.getName().substring(0, file.getName().lastIndexOf('.'));
             languages.put(code, new Language(code, config, file));
             this.getLogger().log(Level.INFO, "Language '" + code + "' registered.");
         }

@@ -37,11 +37,20 @@ messages:
   enabled: '&aWhitelist zapnut.'
   added: '&7Hráč &e(player) &apřidán &7do whitelistu.'
   removed: '&7Hráč &e(player) &codebrán &7z whitelistu.'
-  uuid:
-    online: '&8- &aOnline &7UUID: &e(uuid)'
-    offline: '&8- &cOffline &7UUID: &e(uuid)'
+  mojang-player:
+    message: '&8- &aRegistrovaný &7hráč Minecraftu: (mojang)'
+    true: '&aANO'
+    false: '&cNE'
+    name: '&8- &aRegistrované &7jméno: &e(player)'
   language: '&aJazyk &e(language) &anastaven'
   reload: '&aKonfigurace znovu načtena'
+  import: '&aProveden import vanilla whitelistu. Vypni vanilla whitelist a zapni BetterWhitelist.'
+  list:
+    header: '&7Seznam hráčů ve whitelistu'
+    separator: '&8----------------------------------------------'
+    line: '&8- &e(player) &6&l>>> (mojang)'
+    footer: '&8- &7Jméno hráče &6&l>>> &7Registrovaný Minecraft hráč'
+    empty: '&8- &cSeznam je prázdný'
   error:
     whitelist:
       already-enabled: '&cWhitelist již je zapnutý.'
@@ -59,5 +68,6 @@ messages:
     - '&7Použití: /bw &a<on|off|add|remove|reload> &e[entry]'
     - '&8&o  - &6on|off &5&o=> &7zapíná nebo vypíná whitelist'
     - '&8&o  - &6add|remove &e<playername> &5&o=> &7přidává nebo odebírá hráče do whitelistu'
+    - '&8&o  - &6list &5&o=> &7vypíše seznam všech hráčů ve whitelistu'
     - '&8&o  - &6reload &5&o=> &7znovu načte konfiguraci a whitelist'
     - '&8&o  - &6lang &e[lang_code] &5=> &7nastavit jazyk'

@@ -11,8 +11,8 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public class UUIDConverter {
-    public static UUID getOnlineUUIDFromPlayerName(String player) throws IOException {
+public class UUIDGenerator {
+    private static JsonObject getMojangJSON(String player) throws IOException {
         String jsonS = "";          // Initialize JSON string
 
         // Get API URL for selected player and make connection
@@ -29,7 +29,28 @@ public class UUIDConverter {
 
         // Create JSON object from acquired JSON string
         Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(jsonS, JsonObject.class);
+        return gson.fromJson(jsonS, JsonObject.class);
+    }
+
+    public static String lookupMojangPlayerName(String player) throws IOException {
+        JsonObject jsonObject = getMojangJSON(player);
+
+        if(jsonObject == null) {
+            return null;
+        }
+
+        // Return the correct current name of the player
+        return (jsonObject.get("name").isJsonNull() || jsonObject.get("name").getAsString().equals(""))
+                ? null : jsonObject.get("name").getAsString();
+    }
+
+    public static UUID lookupMojangPlayerUUID(String player) throws IOException {
+        // Get the player JSON object from Mojang API
+        JsonObject jsonObject = getMojangJSON(player);
+
+        if(jsonObject == null) {
+            return null;    // No player found
+        }
 
         // Get the UUID from the JSON object
         String uuid_s = (jsonObject.get("id").isJsonNull() || jsonObject.get("id").getAsString().equals(""))
@@ -45,7 +66,7 @@ public class UUIDConverter {
                 .insert(18, '-').insert(23, '-').toString());
     }
 
-    public static UUID getOfflineUUIDFromPlayerName(String player) {
+    public static UUID generateOfflineUUIDFromPlayerName(String player) {
         // Generate the UUID from the offline player
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + player).getBytes(StandardCharsets.UTF_8));
     }

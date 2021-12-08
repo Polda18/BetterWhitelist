@@ -37,11 +37,20 @@ messages:
   enabled: '&aWhitelist enabled.'
   added: '&7Player &e(player) &aadded &7into the whitelist.'
   removed: '&7Player &e(player) &cremoved &7from the whitelist.'
-  uuid:
-    online: '&8- &aOnline &7UUID: &e(uuid)'
-    offline: '&8- &cOffline &7UUID: &e(uuid)'
+  mojang-player:
+    message: '&8- &aRegistered &7Minecraft player: (mojang)'
+    true: '&aYES'
+    false: '&cNO'
+    name: '&8- &aRegistered &7name: &e(player)'
   language: '&aLanguage &e(language) &aenabled'
   reload: '&aConfig reloaded'
+  import: '&aVanilla whitelist imported. Turn vanilla whitelist off and turn BetterWhitelist on.'
+  list:
+    header: '&7Players list in whitelist'
+    separator: '&8----------------------------------------------'
+    line: '&8- &e(player) &6&l>>> (mojang)'
+    footer: '&8- &7Player name &6&l>>> &7Registered Minecraft player'
+    empty: '&8- &cList is empty'
   error:
     whitelist:
       already-enabled: '&cWhitelist is already enabled.'
@@ -59,5 +68,6 @@ messages:
     - '&7Usage: /bw &a<on|off|add|remove|reload> &e[entry]'
     - '&8&o  - &6on|off &5&o=> &7turns whitelist on and off'
     - '&8&o  - &6add|remove &e<playername> &5&o=> &7adds or removes player to whitelist'
+    - '&8&o  - &6list &5&o=> &7lists all players in whitelist'
     - '&8&o  - &6reload &5=> &7reloads config and whitelist'
     - '&8&o  - &6lang &e[lang_code] &5=> &7set a language'

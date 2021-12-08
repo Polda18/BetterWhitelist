@@ -3,19 +3,30 @@ package me.polda18.betterwhitelist.commands;
 import com.google.gson.*;
 import com.sun.jdi.InternalException;
 import me.polda18.betterwhitelist.BetterWhitelist;
+import me.polda18.betterwhitelist.config.Whitelist;
+import me.polda18.betterwhitelist.config.WhitelistEntry;
+import me.polda18.betterwhitelist.utils.AlreadyInWhitelistException;
 import me.polda18.betterwhitelist.utils.InvalidEntryException;
 import me.polda18.betterwhitelist.utils.OnlineUUIDException;
+import me.polda18.betterwhitelist.utils.UUIDGenerator;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class WhitelistCommand implements CommandExecutor {
@@ -38,7 +49,9 @@ public class WhitelistCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean isConsole = sender instanceof ConsoleCommandSender;
 
-        if(!command.getName().equals("betterwhitelist") && !label.equals("betterwhitelist") && !label.equals("bw")) {
+        if(!command.getName().equalsIgnoreCase("betterwhitelist")
+                && !label.equalsIgnoreCase("betterwhitelist")
+                && !label.equalsIgnoreCase("bw")) {
             // Executed command isn't for this plugin
             return true;
         }
@@ -55,7 +68,7 @@ public class WhitelistCommand implements CommandExecutor {
             this.getUsage(sender);
         } else {
             // Resolve subcommands and their arguments
-            switch(args[0]) {
+            switch(args[0].toLowerCase()) {
                 case "on":
                     // Turn whitelist on
                     if(plugin.whitelistIsEnabled()) {
@@ -98,57 +111,66 @@ public class WhitelistCommand implements CommandExecutor {
                         // Player not specified
                         this.getUsage(sender);
                     } else {
-                        if(plugin.getWhitelist().getEntry(args[1]) != null) {
-                            // Player is already in whitelist
-                            String msg = plugin.getLanguage().getConfig().getString("messages.error.already-in-whitelist");
-                            msg = msg.replace("(player)", args[1]);
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-                        } else {
-                            try {
-                                // Add into whitelist
-                                plugin.getWhitelist().addEntry(args[1]);
+                        try {
+                            WhitelistEntry entry = plugin.getWhitelist().addEntry(args[1]);
 
-                                String player = args[1];
-                                String uuid_online = plugin.getWhitelist().getEntry(args[1]).getOnlineUUID().toString();
-                                String uuid_offline = plugin.getWhitelist().getEntry(args[1]).getOfflineUUID().toString();
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    plugin.getLanguage().getConfig().getString("messages.added")
+                                            .replace("(player)", entry.getPlayer())));
 
-                                String player_msg = plugin.getLanguage().getConfig().getString("messages.added")
-                                        .replace("(player)", player);
+                            if(!Bukkit.getOnlineMode()) {
+                                boolean is_mojang_player = (entry.getOnlineUUID() != null);
 
-                                String uuid_online_msg = plugin.getLanguage().getConfig().getString("messages.uuid.online")
-                                        .replace("(uuid)", uuid_online);
-                                String uuid_offline_msg = plugin.getLanguage().getConfig().getString("messages.uuid.offline")
-                                        .replace("(uuid)", uuid_offline);
-
-                                // Save whitelist into YAML data
-                                plugin.getWhitelist().getConfig().save(plugin.getWhitelist().getFile());
-
-                                // Send message for admin
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', player_msg));
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', uuid_online_msg));
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', uuid_offline_msg));
-                            } catch (IOException e) {
-                                // An internal error occured
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
-                                e.printStackTrace();
-                            } catch (OnlineUUIDException e) {
-                                // Server in online mode, but provided player isn't in Mojang's database
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage()
-                                                .getConfig()
-                                                .getString("messages.error.not-found.in-mojang")
-                                                .replace("(player)", args[1])));
-                            } catch (JsonParseException e) {
-                                // Loaded whitelist is in incorrect format
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig().getString("messages.error.parse")));
-                                e.printStackTrace();
-                            } catch (InternalException e) {
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
-                                e.printStackTrace();
+                                        plugin.getLanguage().getConfig()
+                                                .getString("messages.mojang-player.message")
+                                                .replace("(mojang)",
+                                                        (is_mojang_player)
+                                                                ? plugin.getLanguage().getConfig()
+                                                                        .getString("messages.mojang-player.true")
+                                                                : plugin.getLanguage().getConfig()
+                                                                        .getString("messages.mojang-player.false"))));
+
+                                String mojang_player = UUIDGenerator.lookupMojangPlayerName(entry.getPlayer());
+
+                                if(mojang_player != null) {
+                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                            plugin.getLanguage().getConfig()
+                                                    .getString("messages.mojang-player.name")
+                                                    .replace("(player)", mojang_player)));
+                                }
                             }
+                        } catch (AlreadyInWhitelistException e) {
+                            try {
+                                WhitelistEntry entry = plugin.getWhitelist().getEntry(args[1]);
+
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig()
+                                                .getString("messages.error.already-in-whitelist")
+                                                .replace("(player)", entry.getPlayer())));
+                            } catch (IOException ex) {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
+                                ex.printStackTrace();
+                            }
+
+                        } catch (OnlineUUIDException e) {
+                            try {
+                                WhitelistEntry entry = plugin.getWhitelist().getEntry(args[1]);
+
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig()
+                                                .getString("messages.error.not-found.in-mojang")
+                                                .replace("(player)", entry.getPlayer())));
+                            } catch (IOException ex) {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig().getString("messages.error.internal")));
+                                ex.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    plugin.getLanguage().getConfig().getString("messages.error.internal")));
+                            e.printStackTrace();
                         }
                     }
                     break;
@@ -159,51 +181,30 @@ public class WhitelistCommand implements CommandExecutor {
                         this.getUsage(sender);
                     } else {
                         // Remove from whitelist
-                        if(plugin.getWhitelist().getEntry(args[1]) == null) {
-                            // Player specified wasn't found in the whitelist
-                            String msg = plugin.getLanguage().getConfig().getString("messages.error.not-found.in-whitelist");
-                            msg.replace("(player)", args[1]);
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-                        } else {
+                        try {
+                            WhitelistEntry entry = plugin.getWhitelist().getEntry(args[1]);
+                            plugin.getWhitelist().deleteEntry(entry.getPlayer());
+
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    plugin.getLanguage().getConfig().getString("messages.removed")
+                                            .replace("(player)", entry.getPlayer())));
+                        } catch (IOException e) {
+                            // An internal error occured
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    plugin.getLanguage().getConfig().getString("messages.error.internal")));
+                            e.printStackTrace();
+                        } catch (InvalidEntryException e) {
                             try {
-                                // Remove from whitelist
-                                plugin.getWhitelist().deleteEntry(args[1]);
+                                WhitelistEntry entry = plugin.getWhitelist().getEntry(args[1]);
 
-                                String player_msg = plugin.getLanguage().getConfig().getString("messages.added");
-                                player_msg.replace("(player)", args[1]);
-
-                                // Save whitelist into JSON data
-                                File file = new File(plugin.getDataFolder(), "whitelist.json");
-                                StringBuilder json_builder = new StringBuilder();
-
-                                if(!file.exists()) {
-                                    throw new IOException("Whitelist JSON file is missing!");
-                                } else {
-                                    Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8);
-                                    stream.forEach(s -> json_builder.append(s).append("\n"));
-                                }
-
-                                JsonParser parser = new JsonParser();
-                                JsonElement whitelist = parser.parse(json_builder.toString());
-                                if(!(whitelist instanceof JsonObject)) {
-                                    throw new JsonParseException("Loaded whitelist is in incorrect format");
-                                }
-
-                                ((JsonObject) whitelist).remove(args[1]);
-                            } catch (IOException e) {
-                                // An internal error occured
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getLanguage().getConfig()
+                                                .getString("messages.error.not-found.in-whitelist")
+                                                .replace("(player)", entry.getPlayer())));
+                            } catch (IOException ex) {
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                         plugin.getLanguage().getConfig().getString("messages.error.internal")));
-                                e.printStackTrace();
-                            } catch (JsonParseException e) {
-                                // Loaded whitelist is in incorrect format
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig().getString("messages.error.parse")));
-                                e.printStackTrace();
-                            } catch (InvalidEntryException e) {
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig().getString("messages.error.not-found.in-whitelist")));
-                                e.printStackTrace();
+                                ex.printStackTrace();
                             }
                         }
                     }
@@ -215,15 +216,54 @@ public class WhitelistCommand implements CommandExecutor {
                             plugin.getLanguage().getConfig().getString("messages.reload")));
 
                     break;
+                case "list":
+                    FileConfiguration config = plugin.getWhitelist().getConfig();
+                    HashMap<String, HashMap<String, String>> hm = new HashMap<>();
+
+                    for(String key : config.getConfigurationSection("").getKeys(false)) {
+                        HashMap<String, String> entry = new HashMap<>();
+
+                        entry.put("online_uuid", config.getString(key + ".online_uuid"));
+                        entry.put("offline_uuid", config.getString(key + ".offline_uuid"));
+
+                        hm.put(key, entry);
+                    }
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.list.header")));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.list.separator")));
+
+                    if(hm.isEmpty()) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.list.empty")));
+                    }
+
+                    hm.forEach((key, value) -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.list.line")
+                                    .replace("(player)", key)
+                                    .replace("(mojang)", (value.get("online_uuid") != null)
+                                            ? plugin.getLanguage().getConfig()
+                                                    .getString("messages.mojang-player.true")
+                                            : plugin.getLanguage().getConfig()
+                                                    .getString("messages.mojang-player.false")))));
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.list.separator")));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.list.footer")));
+                    break;
                 case "lang":
                     if(args.length < 2) {
-                        // Language not specified
+                        // Language not specified, send current language
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                plugin.getLanguage().getConfig().getString("messages.language")));
+                                plugin.getLanguage().getConfig().getString("messages.language")
+                                        .replace("(language)",
+                                                plugin.getLanguage().getConfig().getString("name"))));
                     } else {
                         try {
                             // Set the plugin language
-                            plugin.setLanguage(args[1]);
+                            plugin.setLanguage(args[1].toLowerCase());
 
                             // Save the config
                             plugin.getConfig().set("language", args[1]);
@@ -231,12 +271,29 @@ public class WhitelistCommand implements CommandExecutor {
 
                             // Send message
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                    plugin.getLanguage().getConfig().getString("messages.language")));
+                                    plugin.getLanguage().getConfig().getString("messages.language")
+                                            .replace("(language)",
+                                                    plugin.getLanguage().getConfig().getString("name"))));
                         } catch (InvalidEntryException e) {
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                     plugin.getLanguage().getConfig().getString("messages.error.language")));
                         }
                     }
+                    break;
+                case "import":
+                    Set<OfflinePlayer> vanilla_whitelist = Bukkit.getWhitelistedPlayers();
+
+                    for (OfflinePlayer player : vanilla_whitelist) {
+                        try {
+                            WhitelistEntry entry = plugin.getWhitelist().addEntry(player.getName());
+                        } catch (OnlineUUIDException | AlreadyInWhitelistException | IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            plugin.getLanguage().getConfig().getString("messages.import")));
+                    break;
                 default:
                     // Subcommand not recognized, display usage
                     this.getUsage(sender);
