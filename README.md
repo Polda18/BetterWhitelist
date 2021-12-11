@@ -9,7 +9,7 @@ players to be able to join the server. First version of this plugin are out,
 but keep in mind that these versions are still in ALPHA testing phase. If you
 want to participate in testing out this plugin, download from releases.
 Otherwise wait for more stable releases. If you find a bug, fill in bug report
-in GitHub [issues page](/issues).
+in GitHub [issues page](//www.github.com/Polda18/BetterWhitelist/issues).
 
 ## How it works and issue with vanilla whitelist
 Pretty much how you would expect the whitelist to work. It checks if the player
