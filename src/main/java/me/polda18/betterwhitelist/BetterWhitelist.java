@@ -7,6 +7,7 @@ import me.polda18.betterwhitelist.config.Whitelist;
 import me.polda18.betterwhitelist.events.EventsListener;
 import me.polda18.betterwhitelist.utils.InvalidEntryException;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,6 +67,29 @@ public final class BetterWhitelist extends JavaPlugin {
         }
 
         return this.languages.get(lang_code);
+    }
+
+    public void reloadAllConfigs() {
+        // Reload config
+        this.reloadConfig();
+
+        // Reload whitelist
+        try {
+            this.whitelist.getConfig().load(whitelist.getFile());
+        } catch (IOException | InvalidConfigurationException e) {
+            this.getLogger().log(Level.SEVERE, "An error occured when reloading whitelist.");
+            e.printStackTrace();
+        }
+
+        // Reload language files
+        for(Language language : languages.values()) {
+            try {
+                language.getConfig().load(language.getFile());
+            } catch (IOException | InvalidConfigurationException e) {
+                this.getLogger().log(Level.SEVERE, "An error occured when reloading a language file.");
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setLanguage(String lang_code) throws InvalidEntryException {

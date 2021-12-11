@@ -263,8 +263,8 @@ public class WhitelistCommand implements CommandExecutor {
                         break;      // Command sender has no admin permission to execute
                     }
 
-                    // Reload whitelist
-                    plugin.reloadConfig();
+                    // Reload all plugin configuration files
+                    plugin.reloadAllConfigs();
 
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                             plugin.getLanguage().getConfig().getString("messages.reload")));

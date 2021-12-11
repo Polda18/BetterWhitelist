@@ -85,7 +85,7 @@ public class Whitelist {
             player = mojang_player;     // If in online mode and Mojang user found, use as player name
         }
 
-        UUID offline_uuid = UUIDGenerator.generateOfflineUUIDFromPlayerName(mojang_player);
+        UUID offline_uuid = UUIDGenerator.generateOfflineUUIDFromPlayerName(player);
 
         WhitelistEntry entry = this.getEntry(player);
         if(entry.getOnlineUUID() != null || entry.getOfflineUUID() != null) {
