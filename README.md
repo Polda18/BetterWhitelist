@@ -9,7 +9,7 @@ players to be able to join the server. First version of this plugin are out,
 but keep in mind that these versions are still in ALPHA testing phase. If you
 want to participate in testing out this plugin, download from releases.
 Otherwise wait for more stable releases. If you find a bug, fill in bug report
-in GitHub [issues page](issues).
+in GitHub [issues page](/issues).
 
 ## How it works and issue with vanilla whitelist
 Pretty much how you would expect the whitelist to work. It checks if the player
@@ -94,7 +94,7 @@ own `BetterWhitelist` subdirectory, namely `config.yml`, `whitelist.yml` and dir
 - `config.yml` - This file contains basic configuration (enabled/disabled, language, etc.)
 - `whitelist.yml` - This is the whitelist itself. It is empty by default, but is created
   in order to maintain the whitelist content. You can see the whitelist file example
-  in [`whitelist.example.yml`](blob/main/src/main/resources/whitelist.example.yml) file.
+  in [`whitelist.example.yml`](src/main/resources/whitelist.example.yml) file.
 - `languages/*.yml` - This directory contains files that are used for plugin translations.
   By default, English language is selected and used (`en.yml`). There are additional
   languages available, which can be selected by executing `/wl lang <code>` where `<code>`
