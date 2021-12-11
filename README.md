@@ -23,6 +23,7 @@ whitelist takes their IGN and their current UUID and adds them to the whitelist.
 That's fully expected. But when the player is *NOT* online, then whitelist checks
 Mojang database to find that player in list of registered Minecraft players.
 If that player cannot be found, whitelist refuses to add that player to whitelist.
+
 That is no issue on online mode servers as this is fully expected and there's no
 need to check if the player online does indeed exist or not, because otherwise server
 wouldn't allow that player to join in the first place. But offline mode server allows
@@ -35,7 +36,9 @@ while being offline is pulled from Mojang database, the UUID the server generate
 them when joined mismatches and server refuses them to join. This is what this plugin
 is fixing. It allows offline mode servers manage their whitelist while whitelist is on
 and new players added to that whitelist are offline (in other words have never been
-on the server yet). How is it achieved? First of all, it doesn't use vanilla whitelist,
+on the server yet).
+
+How is it achieved? First of all, it doesn't use vanilla whitelist,
 it uses its own whitelist file, native to Spigot plugin configuration format.
 It allows the plugin to easily manage the whitelist without relying on JSON translation
 from the vanilla whitelist (apart from importing). This allows the plugin to manage
