@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,27 +50,36 @@ public class WhitelistCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean isConsole = sender instanceof ConsoleCommandSender;
 
-        if(!command.getName().equalsIgnoreCase("betterwhitelist")
-                && !label.equalsIgnoreCase("betterwhitelist")
-                && !label.equalsIgnoreCase("bw")) {
+        if(!command.getName().equalsIgnoreCase("whitelist")
+                && !label.equalsIgnoreCase("whitelist")
+                && !label.equalsIgnoreCase("wl")) {
             // Executed command isn't for this plugin
             return true;
         }
 
-        if(!isConsole && !sender.hasPermission("betterwhitelist.execute")) {
-            // Command sender is not a console and has no permission to execute this command
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    plugin.getLanguage().getConfig().getString("messages.error.permission")));
-            return true;
-        }
-
         if(args.length < 1) {
+            // Check any requested permission
+            if(!isConsole && !sender.hasPermission("betterwhitelist.admin")
+                    && !sender.hasPermission("betterwhitelist.add")
+                    && !sender.hasPermission("betterwhitelist.remove")
+                    && !sender.hasPermission("betterwhitelist.list")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                return true;        // Command sender has no requested permission to execute
+            }
+
             // Just a command alone is sent - display usage
             this.getUsage(sender);
         } else {
             // Resolve subcommands and their arguments
             switch(args[0].toLowerCase()) {
                 case "on":
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                    }
+
                     // Turn whitelist on
                     if(plugin.whitelistIsEnabled()) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -88,6 +98,13 @@ public class WhitelistCommand implements CommandExecutor {
                     }
                     break;
                 case "off":
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no admin permission
+                    }
+
                     // Turn whitelist off
                     if(plugin.whitelistIsEnabled()) {
                         // Set the enabled flag in plugin structure to false
@@ -105,7 +122,29 @@ public class WhitelistCommand implements CommandExecutor {
                                 plugin.getLanguage().getConfig().getString("messages.error.whitelist.already-disabled")));
                     }
                     break;
+                case "status":
+                    // Check status of the whitelist
+                    if(!(sender instanceof ConsoleCommandSender)
+                            && !sender.hasPermission("betterwhitelist.admin")) {
+                        // Command sender has no admin permission to execute it
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                    } else {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.status.msg")
+                                .replace("(status)", (plugin.whitelistIsEnabled())
+                                        ? plugin.getLanguage().getConfig().getString("messages.status.enabled")
+                                        : plugin.getLanguage().getConfig().getString("messages.status.disabled"))));
+                    }
+                    break;
                 case "add":
+                    // Check add permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.add")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no add permission to execute
+                    }
+
                     // Add player to whitelist
                     if(args.length < 2) {
                         // Player not specified
@@ -175,6 +214,13 @@ public class WhitelistCommand implements CommandExecutor {
                     }
                     break;
                 case "remove":
+                    // Check remove permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.remove")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no remove permission to execute
+                    }
+
                     // Remove player from whitelist
                     if(args.length < 2) {
                         // Player not specified
@@ -210,6 +256,14 @@ public class WhitelistCommand implements CommandExecutor {
                     }
                     break;
                 case "reload":
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no admin permission to execute
+                    }
+
+                    // Reload whitelist
                     plugin.reloadConfig();
 
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -217,6 +271,14 @@ public class WhitelistCommand implements CommandExecutor {
 
                     break;
                 case "list":
+                    // Check list permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.list")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no list permission to execute
+                    }
+
+                    // List all players in whitelist
                     FileConfiguration config = plugin.getWhitelist().getConfig();
                     HashMap<String, HashMap<String, String>> hm = new HashMap<>();
 
@@ -254,6 +316,14 @@ public class WhitelistCommand implements CommandExecutor {
                             plugin.getLanguage().getConfig().getString("messages.list.footer")));
                     break;
                 case "lang":
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no admin permission to execute
+                    }
+
+                    // Check or change language
                     if(args.length < 2) {
                         // Language not specified, send current language
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -281,6 +351,14 @@ public class WhitelistCommand implements CommandExecutor {
                     }
                     break;
                 case "import":
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no admin permission to execute
+                    }
+
+                    // Import data from vanilla whitelist
                     Set<OfflinePlayer> vanilla_whitelist = Bukkit.getWhitelistedPlayers();
 
                     for (OfflinePlayer player : vanilla_whitelist) {
@@ -295,6 +373,16 @@ public class WhitelistCommand implements CommandExecutor {
                             plugin.getLanguage().getConfig().getString("messages.import")));
                     break;
                 default:
+                    // Check any of requested permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")
+                            && !sender.hasPermission("betterwhitelist.add")
+                            && !sender.hasPermission("betterwhitelist.remove")
+                            && !sender.hasPermission("betterwhitelist.list")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                plugin.getLanguage().getConfig().getString("messages.error.permission")));
+                        break;      // Command sender has no requested permission to execute
+                    }
+
                     // Subcommand not recognized, display usage
                     this.getUsage(sender);
             }

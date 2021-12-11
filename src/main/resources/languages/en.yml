@@ -9,10 +9,10 @@
 #
 #-----------------------------------------------------------------
 
-# Language specification
+# Language specification (localized language name)
 name: 'English'
 
-# Different messages that are translatable
+# Plugin messages that are translatable
 # You can use colors denoted by "&" character and a hexadecimal
 # number ranging from 0-9 and a-f, or a letter signaling format:
 # &0 - black             &8 - dark gray
@@ -29,12 +29,16 @@ name: 'English'
 
 # You can also use these variables:
 # (player) - refers to operated player
-# (uuid) - refers to eighter online or offline UUID (depends on usage)
 # (language) - refers to currently selected language
-# Note: If server runs in Offline mode, the online UUID resolves to null
+# (mojang) - refers to whether player was found in Mojang's database or not (case insensitive)
+# (status) - refers to whitelist status
 messages:
   disabled: '&cWhitelist disabled.'
   enabled: '&aWhitelist enabled.'
+  status:
+    msg: '&6Whitelist is (status)&6.'
+    enabled: '&aenabled'
+    disabled: '&cdisabled'
   added: '&7Player &e(player) &aadded &7into the whitelist.'
   removed: '&7Player &e(player) &cremoved &7from the whitelist.'
   mojang-player:
@@ -65,9 +69,14 @@ messages:
     saving: '&cWhitelist failed to save on disk. Make sure to check permissions for writing.'
     language: '&cSelected language not available.'
   usage:
-    - '&7Usage: /bw &a<on|off|add|remove|reload> &e[entry]'
-    - '&8&o  - &6on|off &5&o=> &7turns whitelist on and off'
-    - '&8&o  - &6add|remove &e<playername> &5&o=> &7adds or removes player to whitelist'
-    - '&8&o  - &6list &5&o=> &7lists all players in whitelist'
-    - '&8&o  - &6reload &5=> &7reloads config and whitelist'
-    - '&8&o  - &6lang &e[lang_code] &5=> &7set a language'
+    - '&7Usage: /wl &a<podpříkaz> &e[argument]'
+    - '&8&o  - &6on &5&o=> &7turns whitelist on (permission &2&lbetterwhitelist.admin&7)'
+    - '&8&o  - &6off &5&o=> &7turns whitelist off (permission &2&lbetterwhitelist.admin&7)'
+    - '&8&o  - &6add &e<playername> &5&o=> &7adds player to whitelist (permission &2&lbetterwhitelist.add&7)'
+    - '&8&o  - &6remove &e<playername> &5&o=> &7removes player from whitelist (permission &2&lbetterwhitelist.remove&7)'
+    - '&8&o  - &6list &5&o=> &7lists all players in whitelist (permission &2&lbetterwhitelist.list&7)'
+    - '&8&o  - &6status &5&o=> &7show whitelist status (enabled/disabled) (permission &2&lbetterwhitelist.admin&7)'
+    - '&8&o  - &6reload &5=> &7reloads config and whitelist (permission &2&lbetterwhitelist.admin&7)'
+    - '&8&o  - &6lang &e[lang_code] &5=> &7check or set a language (permission &2&lbetterwhitelist.admin&7)'
+    - - '&8&o  - &6import &5=> &7imports players from vanilla whitelist (permission &2&lbetterwhitelist.admin&7)'
+  kick: '&cYou are not on the whitelist!'

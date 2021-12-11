@@ -24,59 +24,74 @@ public class Autocomplete implements TabCompleter {
         ArrayList<String> list = new ArrayList<>();
         boolean isConsole = sender instanceof ConsoleCommandSender;
 
-        if(!command.getName().equalsIgnoreCase("betterwhitelist")
-                || (!isConsole && !sender.hasPermission("betterwhitelist.execute"))) {
+        if(!command.getName().equalsIgnoreCase("whitelist")) {
             return null;
             // Make sure this autocomplete only returns when the command invoked belongs to this plugin
-            // and the command sender has appropriate permissions to run the command.
             // Since this plugin is one-purpose, only one command belongs in here.
         }
 
         switch(args.length) {
             case 1:         // First argument
-                list.add("on");
-                list.add("off");
-                list.add("add");
-                list.add("remove");
-                list.add("reload");
-                list.add("list");
-                list.add("lang");
-                list.add("import");
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("on");         // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("off");        // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.add"))
+                    list.add("add");        // Add to list only if command sender has add permission
+                if(isConsole || sender.hasPermission("betterwhitelist.remove"))
+                    list.add("remove");     // Add to list only if command sender has remove permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("reload");     // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.list"))
+                    list.add("list");       // Add to list only if command sender has list permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("lang");       // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("import");     // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("status");     // Add to list only if command sender has admin permission
+
+                if(list.isEmpty()) {
+                    return null;            // If the list is empty (sender has no permission), no list is given
+                }
                 break;
             case 2:         // Second argument (if available)
                 switch(args[0].toLowerCase()) {
                     case "add":         // User wants to add a player to whitelist
-                        list.add("ExamplePlayer");      // Give an example player :)
+                        if(isConsole || sender.hasPermission("betterwhitelist.add")) {
+                            list.add("<ExamplePlayer>");    // Give an example player :)
+                        } else {
+                            return null;
+                        }
                         break;
                     case "remove":      // User wants to remove player from whitelist
-                        for (String player :
-                                plugin.getWhitelist().getConfig()
-                                        .getConfigurationSection("").getKeys(false)) {
-                            list.add(player);           // Get all whitelisted players
+                        if(isConsole || sender.hasPermission("betterwhitelist.remove")) {
+                            for (String player :
+                                    plugin.getWhitelist().getConfig().getKeys(false)) {
+                                list.add(player);           // Get all whitelisted players
+                            }
+                        } else {
+                            return null;
                         }
                         break;
                     case "lang":        // User wants to view or change set language
                         // Give a list of available languages
-                        for(String lang_code: plugin.listAvailableLanguages().keySet()) {
-                            list.add(lang_code);
+                        if(isConsole || sender.hasPermission("betterwhitelist.admin")) {
+                            for(String lang_code: plugin.listAvailableLanguages().keySet()) {
+                                list.add(lang_code);
+                            }
+                        } else {
+                            return null;
                         }
                         break;
-                    case "import":      // User wants to import vanilla whitelist
-                        // No further informations can be provided here, fall back to default
-                    case "on":          // User wants to enable whitelist
-                        // No further informations can be provided here, fall back to default
-                    case "off":         // User wants to disable whitelist
-                        // No further informations can be provided here, fall back to default
-                    case "reload":      // User wants to reload whitelist from a config
-                        // No further informations can be provided here, fall back to default
-                    case "list":        // User wants to list players in whitelist
-                        // No further informations can be provided here, fall back to default
-                    default:            // User entered invalid argument
-                        // Invalid argument provided, default to no list given
+                    default:            // User entered invalid subcommand or subcommand has no arguments
+                        // Invalid subcommand provided or subcommand has no arguments, default to no list given
+                        return null;
                 }
                 break;
             default:
-                // No further informations provided, return empty list
+                // No further informations provided, return no list
+                return null;
         }
 
         return list;

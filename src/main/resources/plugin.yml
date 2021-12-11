@@ -8,18 +8,32 @@ authors: [CZghost]
 description: A Minecraft Spigot plugin for better whitelist
 website: https://polda18.github.io/BetterWhitelist
 commands:
-  betterwhitelist:
+  whitelist:
     description: Manages whitelist
-    aliases: [bw]
-    usage: /<command> (arguments)
-    permission: betterwhitelist.execute
-    permission-message: You do not have permission to use this command.
+    aliases: [wl]
+    usage: /<command> (subcommand) (arguments)
 permissions:
-  betterwhitelist.execute:
-    description: Allows you to execute betterwhitelist command.
+  betterwhitelist.add:
+    description: Add to whitelist
     default: op
-  betterwhitelist.*:
-    description: Wildcard permission - allows you to execute betterwhitelist command.
+  betterwhitelist.remove:
+    description: Remove from whitelist
+    default: op
+  betterwhitelist.list:
+    description: List players in whitelist
+    default: op
+  betterwhitelist.admin:
+    description: Allows you to execute all /whitelist subcommands.
     default: op
     children:
-      betterwhitelist.execute: true
+      betterwhitelist.add: true
+      betterwhitelist.remove: true
+      betterwhitelist.list: true
+  betterwhitelist.*:
+    description: Wildcard permission - allows you to execute all /whitelist subcommands.
+    default: op
+    children:
+      betterwhitelist.admin: true
+      betterwhitelist.add: true
+      betterwhitelist.remove: true
+      betterwhitelist.list: true

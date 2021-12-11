@@ -4,6 +4,7 @@ import me.polda18.betterwhitelist.commands.Autocomplete;
 import me.polda18.betterwhitelist.commands.WhitelistCommand;
 import me.polda18.betterwhitelist.config.Language;
 import me.polda18.betterwhitelist.config.Whitelist;
+import me.polda18.betterwhitelist.events.EventsListener;
 import me.polda18.betterwhitelist.utils.InvalidEntryException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -97,15 +98,19 @@ public final class BetterWhitelist extends JavaPlugin {
         this.getLogger().log(Level.INFO, "");
 
         // Register new command
-        this.getCommand("betterwhitelist").setExecutor(new WhitelistCommand(this));
-        this.getCommand("betterwhitelist").setTabCompleter(new Autocomplete(this));
+        this.getCommand("whitelist").setExecutor(new WhitelistCommand(this));
+        this.getCommand("whitelist").setTabCompleter(new Autocomplete(this));
+
+        // Get events listener
+        this.getServer().getPluginManager().registerEvents(new EventsListener(this), this);
 
         // Get default configurations from resources if non-existent
         this.getLogger().log(Level.INFO, "Loading config...");
         this.saveDefaultConfig();
         // Get language files from resources if non-existent
-        this.saveDefaultLanguage("cs.yml");
-        this.saveDefaultLanguage("en.yml");
+        for(String language : Language.DEFAULT_LANGUAGE_FILES) {
+            this.saveDefaultLanguage(language);
+        }
         // New languages be put before this line
         this.getLogger().log(Level.INFO, "Config loaded");
 
