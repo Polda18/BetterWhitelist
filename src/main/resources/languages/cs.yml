@@ -49,6 +49,7 @@ messages:
   language: '&aJazyk &e(language) &anastaven'
   reload: '&aKonfigurace znovu načtena'
   import: '&aProveden import vanilla whitelistu. Vypni vanilla whitelist a zapni BetterWhitelist.'
+  import_player: '&aImport hráče &e(player)&a z vanilla whitelistu.'
   list:
     header: '&7Seznam hráčů ve whitelistu'
     separator: '&8----------------------------------------------'
@@ -80,3 +81,4 @@ messages:
     - '&8&o  - &6lang &e[lang_code] &5=> &7vypíše nebo nastaví jazyk (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6import &5=> &7importuje hráče z vanilla whitelistu (oprávnění &2&lbetterwhitelist.admin&7)'
   kick: '&cNejsi na whitelistu!'
+  online_player_update: '&aHráč &e(old_player)&a nalezen ve whitelistu si změnil nick na &e(new_player)&a.'

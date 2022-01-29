@@ -11,9 +11,18 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+/**
+ * Static class to generate UUIDs for specified players
+ */
 public class UUIDGenerator {
+    /**
+     * Private method to build a JSON deserialized object from serialized JSON string returned by Mojang database
+     * @param player Specified player for lookup
+     * @return JSON object containing deserialized results of the lookup
+     * @throws IOException Fires when there was an input/output error trying to contact Mojang database
+     */
     private static JsonObject getMojangJSON(String player) throws IOException {
-        String jsonS = "";          // Initialize JSON string
+        StringBuilder jsonS = new StringBuilder();          // Initialize JSON string
 
         // Get API URL for selected player and make connection
         URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + player);
@@ -24,14 +33,22 @@ public class UUIDGenerator {
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
         while((inputLine = in.readLine()) != null) {
-            jsonS += inputLine;
+            jsonS.append(inputLine);
         }
 
         // Create JSON object from acquired JSON string
         Gson gson = new Gson();
-        return gson.fromJson(jsonS, JsonObject.class);
+        return gson.fromJson(jsonS.toString(), JsonObject.class);
     }
 
+    /**
+     * Method to lookup the Mojang player name in online database.
+     * Mojang stores the exact capitalization of specified player name, and plugin in online mode server resolves
+     * the correct capitalization of the specified player name and patches the specified string with it.
+     * @param player Specified player to lookup
+     * @return Correct capitalization of the specified player in Mojang's database
+     * @throws IOException Fired when there was an error trying to contact Mojang's database
+     */
     public static String lookupMojangPlayerName(String player) throws IOException {
         JsonObject jsonObject = getMojangJSON(player);
 
@@ -44,6 +61,12 @@ public class UUIDGenerator {
                 ? null : jsonObject.get("name").getAsString();
     }
 
+    /**
+     * Main method to lookup the player's online mode UUID in Mojang's database
+     * @param player Specified player to lookup
+     * @return Online mode UUID for the specified player if found
+     * @throws IOException Fired when there was an error trying to contact Mojang's database
+     */
     public static UUID lookupMojangPlayerUUID(String player) throws IOException {
         // Get the player JSON object from Mojang API
         JsonObject jsonObject = getMojangJSON(player);
@@ -66,6 +89,11 @@ public class UUIDGenerator {
                 .insert(18, '-').insert(23, '-').toString());
     }
 
+    /**
+     * Main method to get player's offline mode UUID
+     * @param player Speficied player to generate their offline UUID from their nick
+     * @return Generated offline mode UUID
+     */
     public static UUID generateOfflineUUIDFromPlayerName(String player) {
         // Generate the UUID from the offline player
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + player).getBytes(StandardCharsets.UTF_8));

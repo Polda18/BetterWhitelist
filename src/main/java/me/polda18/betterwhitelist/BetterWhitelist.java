@@ -11,6 +11,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
@@ -19,12 +20,19 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * Plugin skeleton that wraps around the entire structure - this is the main class that is run by the server
+ */
 public final class BetterWhitelist extends JavaPlugin {
     private HashMap<String, Language> languages;
     private boolean enabled;
     private String lang_code;
     private Whitelist whitelist;
 
+    /**
+     * Private method to save the default language filename
+     * @param filename Language filename specified
+     */
     private void saveDefaultLanguage(String filename) {
         File language_file = new File(this.getDataFolder(), "languages/" + filename);
         if(!language_file.exists()) {
@@ -32,6 +40,11 @@ public final class BetterWhitelist extends JavaPlugin {
         }
     }
 
+    /**
+     * List the available languages that the server has installed
+     * @return List of the available languages in form of the language locale code mapped to the language name
+     */
+    @NotNull
     public Map<String, String> listAvailableLanguages() {
         Map<String, String> available_languages = new HashMap<>();
 
@@ -42,18 +55,35 @@ public final class BetterWhitelist extends JavaPlugin {
         return available_languages;
     }
 
+    /**
+     * Sets the whitelist enabled or disabled
+     * @param enabled Boolean value, true for whitelist enabled, false for whitelist disabled
+     */
     public void setWhitelistEnabled(boolean enabled) {
         this.enabled = enabled;
+        getConfig().set("enabled", enabled);
     }
 
+    /**
+     * Returns the whitelist enabled status
+     * @return Whitelist enabled status - true for enabled, false for disabled
+     */
     public boolean whitelistIsEnabled() {
         return this.enabled;
     }
 
+    /**
+     * Get the whitelist instance
+     * @return Whitelist instance
+     */
     public Whitelist getWhitelist() {
         return this.whitelist;
     }
 
+    /**
+     * Get currently selected language
+     * @return Currently selected language
+     */
     public Language getLanguage() {
         Language language = this.languages.get(lang_code);
 
@@ -69,6 +99,9 @@ public final class BetterWhitelist extends JavaPlugin {
         return this.languages.get(lang_code);
     }
 
+    /**
+     * Reload all configurations - the plugin configuration, whitelist and languages specifications
+     */
     public void reloadAllConfigs() {
         // Reload config
         this.reloadConfig();
@@ -92,14 +125,23 @@ public final class BetterWhitelist extends JavaPlugin {
         }
     }
 
+    /**
+     * Sets the language to specified language
+     * @param lang_code Specified language locale code
+     * @throws InvalidEntryException Fired when specified language was not found
+     */
     public void setLanguage(String lang_code) throws InvalidEntryException {
         if(this.languages.get(lang_code) == null) {
             throw new InvalidEntryException("Language not found");
         }
 
         this.lang_code = lang_code;
+        getConfig().set("language", lang_code);
     }
 
+    /**
+     * When plugin is enabled, this method runs all necessary checks and prints their results into console
+     */
     @Override
     public void onEnable() {
         this.languages = new HashMap<>();
@@ -122,8 +164,8 @@ public final class BetterWhitelist extends JavaPlugin {
         this.getLogger().log(Level.INFO, "");
 
         // Register new command
-        this.getCommand("whitelist").setExecutor(new WhitelistCommand(this));
-        this.getCommand("whitelist").setTabCompleter(new Autocomplete(this));
+        Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand(this));
+        Objects.requireNonNull(this.getCommand("whitelist")).setTabCompleter(new Autocomplete(this));
 
         // Get events listener
         this.getServer().getPluginManager().registerEvents(new EventsListener(this), this);
@@ -135,7 +177,8 @@ public final class BetterWhitelist extends JavaPlugin {
         for(String language : Language.DEFAULT_LANGUAGE_FILES) {
             this.saveDefaultLanguage(language);
         }
-        // New languages be put before this line
+
+        // Print out the configuration load
         this.getLogger().log(Level.INFO, "Config loaded");
 
         this.enabled = this.getConfig().getBoolean("enabled", false);
@@ -167,10 +210,8 @@ public final class BetterWhitelist extends JavaPlugin {
             this.getLogger().log(Level.SEVERE, "An error occured. Make sure languages directory is accessible.", x);
         }
 
-        Iterator<Path> languages_iter = language_filenames.iterator();
-
-        while(languages_iter.hasNext()) {
-            File file = new File(languages_iter.next().toString());
+        for (Path language_filename : language_filenames) {
+            File file = new File(language_filename.toString());
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
             String code = file.getName().substring(0, file.getName().lastIndexOf('.'));
             languages.put(code, new Language(code, config, file));
@@ -178,15 +219,20 @@ public final class BetterWhitelist extends JavaPlugin {
         }
 
         this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
-                this.getLanguage().getConfig().getString("messages.language")
-                        .replace("(language)", this.getLanguage().getConfig().getString("name"))));
+                Objects.requireNonNull(this.getLanguage().getConfig().getString("messages.language"))
+                        .replace("(language)", Objects.requireNonNull(this.getLanguage().getConfig()
+                                .getString("name")))));
 
         if(this.enabled) {
             this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
-                    this.languages.get(lang_code).getConfig().getString("messages.enabled")));
+                    Objects.requireNonNull(this.languages.get(lang_code).getConfig()
+                            .getString("messages.enabled"))));
         }
     }
 
+    /**
+     * When plugin is disabled, it saves all the configuration changes into their respected files
+     */
     @Override
     public void onDisable() {
         this.saveConfig();
@@ -195,14 +241,16 @@ public final class BetterWhitelist extends JavaPlugin {
             this.whitelist.getConfig().save(this.whitelist.getFile());
         } catch (IOException e) {
             this.getLogger().log(Level.SEVERE, ChatColor.translateAlternateColorCodes('&',
-                    this.languages.get(lang_code).getConfig().getString("messages.error.saving")));
+                    Objects.requireNonNull(this.languages.get(lang_code).getConfig()
+                            .getString("messages.error.saving"))));
 
             e.printStackTrace();
         }
 
         if(this.enabled) {
             this.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&',
-                    this.languages.get(this.lang_code).getConfig().getString("messages.disabled")));
+                    Objects.requireNonNull(this.languages.get(this.lang_code).getConfig()
+                            .getString("messages.disabled"))));
         }
     }
 }

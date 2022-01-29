@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Whitelist instance
+ */
 public class Whitelist {
     private static Whitelist instance = null;
 
@@ -20,6 +23,13 @@ public class Whitelist {
     private File file;
     private FileConfiguration config;
 
+    /**
+     * Constructor: creates the whitelist instance
+     * @param plugin Plugin instance for access to configuration
+     * @param file File handle to the whitelist file
+     * @param config File configuration handle that embeds the whitelist into the plugin
+     * @throws InstanceAlreadyExistsException Fired when another instance is already in use
+     */
     public Whitelist(BetterWhitelist plugin, File file, FileConfiguration config) throws InstanceAlreadyExistsException {
         if(Whitelist.instance == null) {
             this.plugin = plugin;
@@ -32,14 +42,28 @@ public class Whitelist {
         }
     }
 
+    /**
+     * Get the file handle for the file contaning the whitelist itself
+     * @return Stored file handle
+     */
     public File getFile() {
         return this.file;
     }
 
+    /**
+     * Get the file configuration handle for access to the whitelist content
+     * @return Storef file configuration handle
+     */
     public FileConfiguration getConfig() {
         return this.config;
     }
 
+    /**
+     * Get the entry for specified player
+     * @param player Specified player to be found in the whitelist
+     * @return Entry containing the player name as well as the online and offline UUIDs
+     * @throws IOException Fired when there was an input/output error trying to contact Mojang servers
+     */
     public WhitelistEntry getEntry(String player) throws IOException {
         String mojang_player = UUIDGenerator.lookupMojangPlayerName(player);
 
@@ -56,6 +80,12 @@ public class Whitelist {
         return new WhitelistEntry(player, online_uuid, offline_uuid);
     }
 
+    /**
+     * Deletes an entry from the whitelist for specified player
+     * @param player Specified player to be deleted
+     * @throws InvalidEntryException Fired when player was not found
+     * @throws IOException Fired when there was an input/output error trying to contact Mojang database
+     */
     public void deleteEntry(String player) throws InvalidEntryException, IOException {
         String mojang_player = UUIDGenerator.lookupMojangPlayerName(player);
 
@@ -73,6 +103,14 @@ public class Whitelist {
         this.config.save(this.file);
     }
 
+    /**
+     * Adds an entry for a specified player to the whitelist
+     * @param player Specified player to be added
+     * @return Returns the new entry that has been just created
+     * @throws OnlineUUIDException Fired when player wasn't found in Mojang database and server is in online mode
+     * @throws IOException Fired when there was an input/output error trying to contact Mojang database
+     * @throws AlreadyInWhitelistException Fired when specified player was already found in the whitelist
+     */
     public WhitelistEntry addEntry(String player) throws OnlineUUIDException, IOException, AlreadyInWhitelistException {
         String mojang_player = UUIDGenerator.lookupMojangPlayerName(player);    // Get the correct player name
         UUID online_uuid = UUIDGenerator.lookupMojangPlayerUUID(player);        // Online UUID is always fetched

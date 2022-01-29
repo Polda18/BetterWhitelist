@@ -10,15 +10,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * Autocomplete command in chat
+ */
 public class Autocomplete implements TabCompleter {
     private final BetterWhitelist plugin;
 
+    /**
+     * Constructor: creates this autocompletion handler to be registered in the plugin
+     * @param plugin Plugin instance to be used for access to configurations
+     */
     public Autocomplete(BetterWhitelist plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * Fires when the autocompletion event happens
+     * @param sender Command sender that is writing the command
+     * @param command Command definition itself
+     * @param alias Alias definition of the command itself
+     * @param args List of arguments in the command being written
+     * @return List of suggestions for next autocompletion
+     */
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         ArrayList<String> list = new ArrayList<>();
