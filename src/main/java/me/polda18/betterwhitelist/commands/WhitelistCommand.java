@@ -83,7 +83,7 @@ public class WhitelistCommand implements CommandExecutor {
         } else {
             // Resolve subcommands and their arguments
             switch(args[0].toLowerCase()) {
-                case "on":
+                case "on":      // Enable whitelist
                     // Check admin permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -110,7 +110,7 @@ public class WhitelistCommand implements CommandExecutor {
                                         .getString("messages.enabled"))));
                     }
                     break;
-                case "off":
+                case "off":     // Disable whitelist
                     // Check admin permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -138,8 +138,8 @@ public class WhitelistCommand implements CommandExecutor {
                                         .getString("messages.error.whitelist.already-disabled"))));
                     }
                     break;
-                case "status":
-                    // Check status of the whitelist
+                case "status":      // Check whitelist enabled/disabled status
+                    // Check admin permissions
                     if(!(sender instanceof ConsoleCommandSender)
                             && !sender.hasPermission("betterwhitelist.admin")) {
                         // Command sender has no admin permission to execute it
@@ -157,7 +157,7 @@ public class WhitelistCommand implements CommandExecutor {
                                                         .getString("messages.status.disabled")))));
                     }
                     break;
-                case "add":
+                case "add":     // Add player to whitelist
                     // Check add permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.add")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -166,7 +166,7 @@ public class WhitelistCommand implements CommandExecutor {
                         break;      // Command sender has no add permission to execute
                     }
 
-                    // Add player to whitelist
+                    // Check arguments
                     if(args.length < 2) {
                         // Player not specified
                         this.getUsage(sender);
@@ -206,8 +206,8 @@ public class WhitelistCommand implements CommandExecutor {
                                 WhitelistEntry entry = plugin.getWhitelist().getEntry(args[1]);
 
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        plugin.getLanguage().getConfig()
-                                                .getString("messages.error.already-in-whitelist")
+                                        Objects.requireNonNull(plugin.getLanguage().getConfig()
+                                                .getString("messages.error.already-in-whitelist"))
                                                 .replace("(player)", entry.getPlayer())));
                             } catch (IOException ex) {
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -238,7 +238,7 @@ public class WhitelistCommand implements CommandExecutor {
                         }
                     }
                     break;
-                case "remove":
+                case "remove":      // Remove player from whitelist
                     // Check remove permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.remove")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -247,7 +247,7 @@ public class WhitelistCommand implements CommandExecutor {
                         break;      // Command sender has no remove permission to execute
                     }
 
-                    // Remove player from whitelist
+                    // Check arguments
                     if(args.length < 2) {
                         // Player not specified
                         this.getUsage(sender);
@@ -284,7 +284,7 @@ public class WhitelistCommand implements CommandExecutor {
                         }
                     }
                     break;
-                case "reload":
+                case "reload":      // Reload all config files
                     // Check admin permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -301,7 +301,7 @@ public class WhitelistCommand implements CommandExecutor {
                                     .getString("messages.reload"))));
 
                     break;
-                case "list":
+                case "list":        // List players in whitelist
                     // Check list permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.list")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -353,7 +353,7 @@ public class WhitelistCommand implements CommandExecutor {
                             Objects.requireNonNull(plugin.getLanguage().getConfig()
                                     .getString("messages.list.footer"))));
                     break;
-                case "lang":
+                case "lang":        // Check or change language
                     // Check admin permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -362,7 +362,7 @@ public class WhitelistCommand implements CommandExecutor {
                         break;      // Command sender has no admin permission to execute
                     }
 
-                    // Check or change language
+                    // Check arguments
                     if(args.length < 2) {
                         // Language not specified, send current language
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -394,7 +394,7 @@ public class WhitelistCommand implements CommandExecutor {
                         }
                     }
                     break;
-                case "import":
+                case "import":      // Import players from vanilla whitelist
                     // Check admin permission
                     if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -421,6 +421,23 @@ public class WhitelistCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                             Objects.requireNonNull(plugin.getLanguage().getConfig()
                                     .getString("messages.import"))));
+                    break;
+                case "version":     // Display plugin version
+                    // Check admin permission
+                    if(!isConsole && !sender.hasPermission("betterwhitelist.admin")) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                Objects.requireNonNull(plugin.getLanguage().getConfig()
+                                        .getString("messages.error.permission"))));
+                        break;      // Command sender has no admin permission to execute
+                    }
+
+                    // Send message with version
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            Objects.requireNonNull(Objects.requireNonNull(plugin.getLanguage().getConfig()
+                                    .getString("messages.version"))
+                                    .replace("(version)",
+                                            plugin.getDescription().getVersion()))));
+
                     break;
                 default:
                     // Check any of requested permission

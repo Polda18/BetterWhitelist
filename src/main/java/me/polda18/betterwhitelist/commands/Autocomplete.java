@@ -64,6 +64,8 @@ public class Autocomplete implements TabCompleter {
                     list.add("import");     // Add to list only if command sender has admin permission
                 if(isConsole || sender.hasPermission("betterwhitelist.admin"))
                     list.add("status");     // Add to list only if command sender has admin permission
+                if(isConsole || sender.hasPermission("betterwhitelist.admin"))
+                    list.add("version");    // Add to list only if command sender has admin permission
 
                 if(list.isEmpty()) {
                     return null;            // If the list is empty (sender has no permission), no list is given
@@ -80,10 +82,8 @@ public class Autocomplete implements TabCompleter {
                         break;
                     case "remove":      // User wants to remove player from whitelist
                         if(isConsole || sender.hasPermission("betterwhitelist.remove")) {
-                            for (String player :
-                                    plugin.getWhitelist().getConfig().getKeys(false)) {
-                                list.add(player);           // Get all whitelisted players
-                            }
+                            // Get all whitelisted players
+                            list.addAll(plugin.getWhitelist().getConfig().getKeys(false));
                         } else {
                             return null;
                         }
@@ -91,9 +91,7 @@ public class Autocomplete implements TabCompleter {
                     case "lang":        // User wants to view or change set language
                         // Give a list of available languages
                         if(isConsole || sender.hasPermission("betterwhitelist.admin")) {
-                            for(String lang_code: plugin.listAvailableLanguages().keySet()) {
-                                list.add(lang_code);
-                            }
+                            list.addAll(plugin.listAvailableLanguages().keySet());
                         } else {
                             return null;
                         }
