@@ -1,15 +1,21 @@
 # BetterWhitelist
 A Minecraft Spigot plugin for better whitelist
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Polda18/BetterWhitelist)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Polda18/BetterWhitelist?include_prereleases&label=snapshot)
+![GitHub all releases](https://img.shields.io/github/downloads/Polda18/BetterWhitelist/total)
+![GitHub](https://img.shields.io/github/license/Polda18/BetterWhitelist)
+![GitHub issues](https://img.shields.io/github/issues/Polda18/BetterWhitelist)
+![GitHub Repo stars](https://img.shields.io/github/stars/Polda18/BetterWhitelist?style=social)
+
 ## Introduction
 This plugin is fairly simple. It implements its own whitelist as opposed
 to vanilla one. The usage of this plugin is aimed for offline mode servers
 that for some reason want to use whitelist feature to allow only certain
-players to be able to join the server. First version of this plugin are out,
-but keep in mind that these versions are still in ALPHA testing phase. If you
-want to participate in testing out this plugin, download from releases.
-Otherwise wait for more stable releases. If you find a bug, fill in bug report
-in GitHub [issues page](https://www.github.com/Polda18/BetterWhitelist/issues).
+players to be able to join the server. Plugin is released, you can find it
+on [SpigotMC.org](https://www.spigotmc.org/resources/betterwhitelist.101614/)
+as well. Prereleases are found only here on GitHub. If you find a bug, fill in
+bug report in GitHub [issues page](https://www.github.com/Polda18/BetterWhitelist/issues).
 
 ## How it works and issue with vanilla whitelist
 Pretty much how you would expect the whitelist to work. It checks if the player
