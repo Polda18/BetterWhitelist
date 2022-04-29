@@ -6,7 +6,11 @@ A Minecraft Spigot plugin for better whitelist
 ![GitHub all releases](https://img.shields.io/github/downloads/Polda18/BetterWhitelist/total)
 ![GitHub](https://img.shields.io/github/license/Polda18/BetterWhitelist)
 ![GitHub issues](https://img.shields.io/github/issues/Polda18/BetterWhitelist)
-![GitHub Repo stars](https://img.shields.io/github/stars/Polda18/BetterWhitelist?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/Polda18/BetterWhitelist?style=social)  
+![Spiget Version](https://img.shields.io/spiget/version/101614?label=SpigotMC)
+![Spiget Downloads](https://img.shields.io/spiget/downloads/101614)
+![Spiget Rating](https://img.shields.io/spiget/rating/101614)
+![Spiget Download Size](https://img.shields.io/spiget/download-size/101614)
 
 ## Introduction
 This plugin is fairly simple. It implements its own whitelist as opposed
