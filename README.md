@@ -33,6 +33,7 @@ whitelist takes their IGN and their current UUID and adds them to the whitelist.
 That's fully expected. But when the player is *NOT* online, then whitelist checks
 Mojang database to find that player in list of registered Minecraft players.
 If that player cannot be found, whitelist refuses to add that player to whitelist.
+If that player *IS* found in Mojang's database, then their online UUID is pulled.
 
 That is no issue on online mode servers as this is fully expected and there's no
 need to check if the player online does indeed exist or not, because otherwise server
