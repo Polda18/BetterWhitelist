@@ -6,7 +6,7 @@
 
     <groupId>me.polda18</groupId>
     <artifactId>BetterWhitelist</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>BetterWhitelist</name>
