@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Websites
+    url: http://czghost.4fan.cz/
+    about: Informations about me
+  - name: Discord server
+    url: https://discord.gg/YcDkrFU
+    about: You can optionally use our Discord to report bugs.
