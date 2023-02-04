@@ -1,6 +1,6 @@
 name: BetterWhitelist
 version: ${project.version}
-main: me.polda18.betterwhitelist.BetterWhitelist
+main: cz.czghost.mcspigot.betterwhitelist.BetterWhitelist
 api-version: 1.18
 prefix: BetterWhitelist
 load: STARTUP
@@ -12,6 +12,8 @@ commands:
     description: Manages whitelist
     aliases: [wl]
     usage: /<command> (subcommand) (arguments)
+    permission: betterwhitelist
+    permission-message: You don't have access to this command.
 permissions:
   betterwhitelist.add:
     description: Add to whitelist
@@ -37,3 +39,6 @@ permissions:
       betterwhitelist.add: true
       betterwhitelist.remove: true
       betterwhitelist.list: true
+  betterwhitelist:
+    description: Base permission - for command visibility and usability of authorized players.
+    default: op

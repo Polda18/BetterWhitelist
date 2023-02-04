@@ -1,10 +1,10 @@
-package me.polda18.betterwhitelist.config;
+package cz.czghost.mcspigot.betterwhitelist.config;
 
-import me.polda18.betterwhitelist.BetterWhitelist;
-import me.polda18.betterwhitelist.utils.AlreadyInWhitelistException;
-import me.polda18.betterwhitelist.utils.InvalidEntryException;
-import me.polda18.betterwhitelist.utils.OnlineUUIDException;
-import me.polda18.betterwhitelist.utils.UUIDGenerator;
+import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
+import cz.czghost.mcspigot.betterwhitelist.utils.AlreadyInWhitelistException;
+import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.mcspigot.betterwhitelist.utils.OnlineUUIDException;
+import cz.czghost.mcspigot.betterwhitelist.utils.UUIDGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.polda18</groupId>
+    <groupId>cz.czghost.mcspigot</groupId>
     <artifactId>BetterWhitelist</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0-beta1</version>
     <packaging>jar</packaging>
 
     <name>BetterWhitelist</name>
@@ -16,7 +16,7 @@
         <java.version>1.17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>https://polda18.github.io/BetterWhitelist</url>
+    <url>https://www.github.com/Polda18/BetterWhitelist</url>
 
     <build>
         <plugins>
@@ -25,8 +25,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>

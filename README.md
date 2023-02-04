@@ -21,7 +21,7 @@ on [SpigotMC.org](https://www.spigotmc.org/resources/betterwhitelist.101614/)
 as well. Prereleases are found only here on GitHub. If you find a bug, fill in
 bug report in GitHub [issues page](https://www.github.com/Polda18/BetterWhitelist/issues).
 
-## How it works and issue with vanilla whitelist
+## How does it work and issue with vanilla whitelist
 Pretty much how you would expect the whitelist to work. It checks if the player
 is on the whitelist and if not, it kicks them out of the server with appropriate
 message. Managing the whitelist is you add a player to the whitelist and turn
@@ -66,14 +66,14 @@ use it. These are the subcommands:
   permission to run
 - `on` - Turns the whitelist on, requires `betterwhitelist.admin` permission to run
 - `off` - Turns the whitelist off, requires `betterwhitelist.admin` permission to run
-- `list` - Lists all whitelisted players, requires `betterwhitelist.list` permission to run
-- `add <playername>` - Adds specified player to the whitelist, requires `betterwhitelist.add`
-  permission to run
-- `remove <playername>` - Removes specified player from the whitelist, requires `betterwhitelist.remove` 
-  permission to run
+- `list [p:<page number>]` - Lists all whitelisted players, requires `betterwhitelist.list` permission to run
+- `add <playername> [<another playername> ...]` - Adds specified player(s) to the whitelist,
+  requires `betterwhitelist.add` permission to run
+- `remove <playername> [<another playername> ...]` - Removes specified player(s) from the whitelist,
+  requires `betterwhitelist.remove` permission to run
 - `import` - Imports players from vanilla whitelist to be used with this plugin, requires
   `betterwhitelist.admin` permission to run
-- `lang <language code>` - Checks or changes language of the plugin messages, requires
+- `lang [<language code>]` - Checks or changes language of the plugin messages, requires
   `betterwhitelist.admin` permission to run
 - `reload` - Reloads the whitelist and configuration from the plugin files (used mainly if you do
   manual edits - not recommended), requires `betterwhitelist.admin` permission to run
@@ -83,6 +83,8 @@ use it. These are the subcommands:
 If you're using permissions plugin, this is a list of available permissions you'll need to use.
 All permissions default to server operators (op).
 
+- `betterwhitelist` - This is a base permission and needs to be assigned to anyone who will be working with
+  this whitelist plugin. Without this permission, the command won't be accessible.
 - `betterwhitelist.*` - This is a wildcard permission, which is equivalent for `betterwhitelist.admin`.
   It's recommended to use the named permission.
 - `betterwhitelist.admin` - This is a super permission that allows you to access all subcommands,
@@ -122,10 +124,15 @@ If you had your players in vanilla whitelist previously, you can import them
 using this command: `/wl import`. No additional parameters are required to run this
 command, no additional parameters are also taken into account. Running this
 command silently adds all players found in vanilla whitelist to whitelist of this
-plugin. You can verify content by executing `/wl list` command. To add a new player
-to the whitelist simply run `/wl add <playername>` where `<playername>` refers to
-the player IGN, and to remove a player from the whitelist run `/wl remove <playername>`
-where `<playername>` again refers to the player IGN.
+plugin. You can verify content by executing `/wl list` command. List is numbered,
+so to view next page, add `p:<page number>` argument to the command, where
+`<page_number>` is the page number you want to view. To add a new player
+to the whitelist simply run `/wl add <playername>` where `<playername>` refers
+to the player IGN, and to remove a player from the whitelist run
+`/wl remove <playername>` where `<playername>` again refers to the player IGN.
+It is possible to add or remove multiple players from whitelist by specifying more
+player names separated by spaces. If you use the command in game, it tries to autocomplete
+your command.
 
 ### Disclaimer
 This plugin isn't intended to support criminal behavior. It is intended to aid

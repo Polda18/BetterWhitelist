@@ -32,6 +32,8 @@ name: 'Čeština'
 # (language) - refers to currently selected language
 # (mojang) - refers to whether player was found in Mojang's database or not (case insensitive)
 # (status) - refers to whitelist status
+# (page) - refers to current page number
+# (maxpage) - refers to max number of pages
 messages:
   disabled: '&cWhitelist vypnut.'
   enabled: '&aWhitelist zapnut.'
@@ -46,6 +48,7 @@ messages:
     true: '&aANO'
     false: '&cNE'
     name: '&8- &aRegistrované &7jméno: &e(player)'
+    disclaimer: '&8- &7Nalezená registrace nezaručuje, že se jedná o totožného hráče.'
   language: '&aJazyk &e(language) &anastaven'
   reload: '&aKonfigurace znovu načtena'
   import: '&aProveden import vanilla whitelistu. Vypni vanilla whitelist a zapni BetterWhitelist.'
@@ -53,8 +56,8 @@ messages:
   list:
     header: '&7Seznam hráčů ve whitelistu'
     separator: '&8----------------------------------------------'
-    line: '&8- &e(player) &6&l>>> (mojang)'
-    footer: '&8- &7Jméno hráče &6&l>>> &7Registrovaný Minecraft hráč'
+    line: '&8- &e(player) &6&l| &7Registrovaný hráč: (mojang)'
+    footer: '&8[ &7&lBetterWhitelist &8] &6&l<> &7Stránka &e#(page)&7/&e(maxpage)'
     empty: '&8- &cSeznam je prázdný'
   error:
     whitelist:
@@ -69,16 +72,17 @@ messages:
     permission: '&cPardon, ale na toto nemáš oprávnění.'
     saving: '&cWhitelist se nepovedlo uložit. Prosím, zkontroluj oprávnění k zápisu.'
     language: '&cZvolený jazyk není k dispozici.'
+    ratelimit: '&cJsi příliš rychlý/-á. Počkej, prosím, (retry_time) sekund a zkus to znovu.'
   usage:
     - '&7Použití: /wl &a<subcommand> &e[entry]'
     - '&8&o  - &6on &5&o=> &7zapíná whitelist (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6off &5&o=> &7vypíná whitelist (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6add &e<playername> &5&o=> &7přidává hráče do whitelistu (oprávnění &2&lbetterwhitelist.add&7)'
     - '&8&o  - &6remove &e<playername> &5&o=> &7odebírá hráče z whitelistu (oprávnění &2&lbetterwhitelist.remove&7)'
-    - '&8&o  - &6list &5&o=> &7vypíše seznam všech hráčů ve whitelistu (oprávnění &2&lbetterwhitelist.list&7)'
+    - '&8&o  - &6list [p:<page_number>] &5&o=> &7vypíše seznam všech hráčů ve whitelistu (oprávnění &2&lbetterwhitelist.list&7)'
     - '&8&o  - &6status &5&o=> &7vypíše status whitelistu (zapnut/vypnut) (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6reload &5&o=> &7znovu načte konfiguraci a whitelist (oprávnění &2&lbetterwhitelist.admin&7)'
-    - '&8&o  - &6lang &e[lang_code] &5=> &7vypíše nebo nastaví jazyk (oprávnění &2&lbetterwhitelist.admin&7)'
+    - '&8&o  - &6lang &e[<lang_code>] &5=> &7vypíše nebo nastaví jazyk (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6import &5&o=> &7importuje hráče z vanilla whitelistu (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6version &5&o=> &7zobrazit verzi pluginu (oprávnění &2&lbetterwhitelist.admin&7)'
   kick: '&cNejsi na whitelistu!'

@@ -1,14 +1,16 @@
-package me.polda18.betterwhitelist.events;
+package cz.czghost.mcspigot.betterwhitelist.events;
 
-import me.polda18.betterwhitelist.BetterWhitelist;
-import me.polda18.betterwhitelist.utils.AlreadyInWhitelistException;
-import me.polda18.betterwhitelist.utils.InvalidEntryException;
-import me.polda18.betterwhitelist.utils.OnlineUUIDException;
+import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
+import cz.czghost.mcspigot.betterwhitelist.utils.AlreadyInWhitelistException;
+import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.mcspigot.betterwhitelist.utils.OnlineUUIDException;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -38,7 +40,7 @@ public class EventsListener implements Listener {
      * @throws InvalidEntryException Fired when specified old player wasn't found in the whitelist (online mode update, failsafe mechanism)
      */
     @EventHandler
-    public void onPlayerConnect(AsyncPlayerPreLoginEvent event) throws IOException, AlreadyInWhitelistException, OnlineUUIDException, InvalidEntryException {
+    public void onPlayerConnect(PlayerLoginEvent event) throws IOException, AlreadyInWhitelistException, OnlineUUIDException, InvalidEntryException {
         // Check if the server runs in an online mode or not
         boolean online_mode = Bukkit.getOnlineMode();
 
@@ -48,8 +50,8 @@ public class EventsListener implements Listener {
         }
 
         // Get the player and his UUID
-        UUID uuid_joined = event.getUniqueId();
-        String player = event.getName();
+        UUID uuid_joined = event.getPlayer().getUniqueId();
+        String player = event.getPlayer().getName();
         String uuid_whitelisted = plugin.getWhitelist().getConfig()
                 .getString(player + ((online_mode) ? ".online_uuid" : ".offline_uuid"));
 
@@ -83,9 +85,15 @@ public class EventsListener implements Listener {
 
         // Kick the player if the name/UUID is not found in the whitelist or there's a mismatch
         if(uuid_whitelisted == null || uuid_joined.compareTo(UUID.fromString(uuid_whitelisted)) != 0) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
-                    ChatColor.translateAlternateColorCodes('&',
-                            Objects.requireNonNull(plugin.getLanguage().getConfig().getString("messages.kick"))));
+            String kick_message;
+
+            if(plugin.getConfig().getBoolean("custom-kick-message-enabled"))
+                kick_message = ChatColor.translateAlternateColorCodes('&',
+                        Objects.requireNonNull(plugin.getConfig().getString("custom-kick-message")));
+            else kick_message = ChatColor.translateAlternateColorCodes('&',
+                    Objects.requireNonNull(plugin.getLanguage().getConfig().getString("messages.kick")));
+
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, kick_message);
         }
     }
 }

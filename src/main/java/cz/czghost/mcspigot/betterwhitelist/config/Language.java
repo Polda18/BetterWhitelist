@@ -1,4 +1,4 @@
-package me.polda18.betterwhitelist.config;
+package cz.czghost.mcspigot.betterwhitelist.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -8,11 +8,18 @@
 #
 #
 #-----------------------------------------------------------------
+version: '1.1.0-beta1'
 
-# Language
+# Language selection
 language: en
 # Currently only English (en) and Czech (cs) are supported
 
 # Whitelist enabled or disabled
 enabled: false
 # By default whitelist is disabled
+
+# Custom kick message
+# Color and format codes can be used in this message. Please refer to Minecraft wiki for list of supported codes
+# at https://minecraft.fandom.com/wiki/Formatting_codes (make sure to replace the '§' with '&' - excluding apostrophes)
+custom-kick-message-enabled: false
+custom-kick-message: '&cYou are not whitelisted! Please visit our Discord at &ehttps://discord.gg/yourinvite &cand apply to be whitelisted.&r'

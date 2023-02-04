@@ -32,6 +32,8 @@ name: 'English'
 # (language) - refers to currently selected language
 # (mojang) - refers to whether player was found in Mojang's database or not (case insensitive)
 # (status) - refers to whitelist status
+# (page) - refers to current page number
+# (maxpage) - refers to max number of pages
 messages:
   disabled: '&cWhitelist disabled.'
   enabled: '&aWhitelist enabled.'
@@ -46,6 +48,7 @@ messages:
     true: '&aYES'
     false: '&cNO'
     name: '&8- &aRegistered &7name: &e(player)'
+    disclaimer: '&8- &7Registration found does not guarantee it''s the same player.'
   language: '&aLanguage &e(language) &aenabled'
   reload: '&aConfig reloaded'
   import: '&aVanilla whitelist imported. Turn vanilla whitelist off and turn BetterWhitelist on.'
@@ -53,8 +56,8 @@ messages:
   list:
     header: '&7Players list in whitelist'
     separator: '&8----------------------------------------------'
-    line: '&8- &e(player) &6&l>>> (mojang)'
-    footer: '&8- &7Player name &6&l>>> &7Registered Minecraft player'
+    line: '&8- &e(player) &6&l| &7Registered player: (mojang)'
+    footer: '&8[ &7&lBetterWhitelist &8] &6&l<> &7Page &e#(page)&7/&e(maxpage)'
     empty: '&8- &cList is empty'
   error:
     whitelist:
@@ -69,6 +72,7 @@ messages:
     permission: '&cSorry, you do not have permission to do that.'
     saving: '&cWhitelist failed to save on disk. Make sure to check permissions for writing.'
     language: '&cSelected language not available.'
+    ratelimit: '&cYou''re too fast. Please wait (retry_time) seconds and try again.'
   usage:
     - '&7Usage: /wl &a<podpříkaz> &e[argument]'
     - '&8&o  - &6on &5&o=> &7turns whitelist on (permission &2&lbetterwhitelist.admin&7)'

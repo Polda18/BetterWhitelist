@@ -1,13 +1,14 @@
-package me.polda18.betterwhitelist.utils;
+package cz.czghost.mcspigot.betterwhitelist.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -22,23 +23,32 @@ public class UUIDGenerator {
      * @throws IOException Fires when there was an input/output error trying to contact Mojang database
      */
     private static JsonObject getMojangJSON(String player) throws IOException {
-        StringBuilder jsonS = new StringBuilder();          // Initialize JSON string
-
         // Get API URL for selected player and make connection
         URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + player);
-        URLConnection conn = url.openConnection();
-        conn.connect();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");    // We have to use a GET method here
+        con.setConnectTimeout(5000);    // Set a timeout for both connect and read
+        con.setReadTimeout(5000);
+        int status = con.getResponseCode();     // Read status code
 
-        // Get buffer and read input data into prepared JSON string
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        // Build JSON object string from given response body
+        BufferedReader in = new BufferedReader((status > 299)
+                ? new InputStreamReader(con.getErrorStream())
+                : new InputStreamReader(con.getInputStream()));
         String inputLine;
-        while((inputLine = in.readLine()) != null) {
-            jsonS.append(inputLine);
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
         }
+        in.close();
+
+        // Check for "Too many requests" error
+        if(status == 429)
+            throw new RatelimitException("Too many requests hit", con.getHeaderFieldInt("RetryAfter", 3600));
 
         // Create JSON object from acquired JSON string
         Gson gson = new Gson();
-        return gson.fromJson(jsonS.toString(), JsonObject.class);
+        return gson.fromJson(content.toString(), JsonObject.class);
     }
 
     /**
@@ -52,12 +62,18 @@ public class UUIDGenerator {
     public static String lookupMojangPlayerName(String player) throws IOException {
         JsonObject jsonObject = getMojangJSON(player);
 
+        // Retrieved object is null -> return null
         if(jsonObject == null) {
             return null;
         }
 
+        // Retrieve correct current name
+        JsonElement name = jsonObject.get("name");
+
         // Return the correct current name of the player
-        return (jsonObject.get("name").isJsonNull() || jsonObject.get("name").getAsString().equals(""))
+        return (jsonObject.get("name") == null
+                || jsonObject.get("name").isJsonNull()
+                || jsonObject.get("name").getAsString().equals(""))
                 ? null : jsonObject.get("name").getAsString();
     }
 
@@ -76,7 +92,9 @@ public class UUIDGenerator {
         }
 
         // Get the UUID from the JSON object
-        String uuid_s = (jsonObject.get("id").isJsonNull() || jsonObject.get("id").getAsString().equals(""))
+        String uuid_s = (jsonObject.get("id") == null
+                || jsonObject.get("id").isJsonNull()
+                || jsonObject.get("id").getAsString().equals(""))
                 ? null : jsonObject.get("id").getAsString();
 
         // If null, return null
@@ -85,8 +103,11 @@ public class UUIDGenerator {
         }
 
         // Return the UUID in correct form
-        return UUID.fromString(new StringBuilder(uuid_s).insert(8, '-').insert(13, '-')
-                .insert(18, '-').insert(23, '-').toString());
+//        return UUID.fromString(new StringBuilder(uuid_s).insert(8, '-').insert(13, '-')
+//                .insert(18, '-').insert(23, '-').toString());
+        return UUID.fromString(uuid_s.replaceFirst(
+                "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{12})",
+                "$1-$2-$3-$4-$5"));
     }
 
     /**

@@ -1,11 +1,11 @@
-package me.polda18.betterwhitelist;
+package cz.czghost.mcspigot.betterwhitelist;
 
-import me.polda18.betterwhitelist.commands.Autocomplete;
-import me.polda18.betterwhitelist.commands.WhitelistCommand;
-import me.polda18.betterwhitelist.config.Language;
-import me.polda18.betterwhitelist.config.Whitelist;
-import me.polda18.betterwhitelist.events.EventsListener;
-import me.polda18.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.mcspigot.betterwhitelist.commands.Autocomplete;
+import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.mcspigot.betterwhitelist.commands.WhitelistCommand;
+import cz.czghost.mcspigot.betterwhitelist.config.Language;
+import cz.czghost.mcspigot.betterwhitelist.config.Whitelist;
+import cz.czghost.mcspigot.betterwhitelist.events.EventsListener;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -62,6 +62,7 @@ public final class BetterWhitelist extends JavaPlugin {
     public void setWhitelistEnabled(boolean enabled) {
         this.enabled = enabled;
         getConfig().set("enabled", enabled);
+        saveConfig();
     }
 
     /**
@@ -137,6 +138,7 @@ public final class BetterWhitelist extends JavaPlugin {
 
         this.lang_code = lang_code;
         getConfig().set("language", lang_code);
+        saveConfig();
     }
 
     /**

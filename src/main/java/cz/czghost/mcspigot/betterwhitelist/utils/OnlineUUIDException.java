@@ -1,4 +1,4 @@
-package me.polda18.betterwhitelist.utils;
+package cz.czghost.mcspigot.betterwhitelist.utils;
 
 /**
  * Exception for online UUID not found in Mojang's database
