@@ -1,6 +1,6 @@
 name: BetterWhitelist
 version: ${project.version}
-main: cz.czghost.mcspigot.betterwhitelist.BetterWhitelist
+main: cz.czghost.betterwhitelist.BetterWhitelist
 api-version: 1.18
 prefix: BetterWhitelist
 load: STARTUP

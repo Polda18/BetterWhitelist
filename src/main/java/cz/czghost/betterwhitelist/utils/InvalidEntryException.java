@@ -1,4 +1,4 @@
-package cz.czghost.mcspigot.betterwhitelist.utils;
+package cz.czghost.betterwhitelist.utils;
 
 /**
  * Exception for entry that wasn't found in whitelist

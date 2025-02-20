@@ -1,8 +1,8 @@
-package cz.czghost.mcspigot.betterwhitelist.commands;
+package cz.czghost.betterwhitelist.commands;
 
-import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
-import cz.czghost.mcspigot.betterwhitelist.utils.*;
-import cz.czghost.mcspigot.betterwhitelist.config.WhitelistEntry;
+import cz.czghost.betterwhitelist.config.WhitelistEntry;
+import cz.czghost.betterwhitelist.utils.*;
+import cz.czghost.betterwhitelist.BetterWhitelist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Command handler to handle command execution
@@ -265,21 +266,49 @@ public class WhitelistCommand implements CommandExecutor {
 
     /**
      * List subcommand
-     * @param sender   Who sent this command
-     * @param argument Additional argument
+     * @param sender        Who sent this command
+     * @param arguments     Additional argument
      */
-    private void subcommandList(CommandSender sender, String argument) {
+    private void subcommandList(CommandSender sender, String[] arguments) {
         // Get all players in whitelist
         FileConfiguration config = plugin.getWhitelist().getConfig();
         //HashMap<String, HashMap<String, String>> hm = new HashMap<>();
-        List<String> playerlist = new ArrayList<>(config.getKeys(false).stream().toList());
+        List<String> playerlist = new ArrayList<>(config.getKeys(false));
+
+        // Initialize arguments parameters
+        int page = 1;
+        String filter = "";
+
+        // Iterate through arguments
+        for (String argument : arguments) {
+            if (argument.startsWith("p:")) {
+                // Debug
+                plugin.getLogger().log(Level.INFO, "Debugging | Page argument: " + argument.substring(2));
+
+                page = Integer.parseInt(argument.substring(2));
+            } else if(argument.startsWith("f:")) {
+                // Debug
+                plugin.getLogger().log(Level.INFO, "Debugging | Filter argument: " + argument.substring(2));
+
+                filter = argument.substring(2);
+            }
+        }
+
+        // Filter through playerlist
+        if(!filter.isEmpty()) {
+            final String finalFilter = filter;
+            playerlist = playerlist.stream().filter(s -> s.contains(finalFilter)).collect(Collectors.toCollection(ArrayList::new));
+        }
+
+        // Get max pages
         int maxpages = (int) Math.ceil(playerlist.size() / 5.0);
 
         // Sort all players by alphabet
         playerlist.sort(Comparator.naturalOrder());
 
-        // Retrieve page number
-        int page = (argument.startsWith("p:")) ? Integer.parseInt(argument.substring(2)) : 1;
+        // Check page number against max pages and minimum page number and adjust
+        if(page < 1) page = 1;
+        if(page > maxpages) page = maxpages;
 
         // Print out header
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -297,9 +326,6 @@ public class WhitelistCommand implements CommandExecutor {
                             .getString("messages.list.empty"))));
             return;
         }
-
-        // Check if page number exceeds the max number of pages -> trim to last page if it does
-        if(page > maxpages) page = maxpages;
 
         // List players in whitelist by current page
         for(int i = 5 * (page - 1); i < Math.min(5 * page, playerlist.size()); ++i) {
@@ -475,9 +501,10 @@ public class WhitelistCommand implements CommandExecutor {
                     }
 
                     // Retrieve arguments for this subcommand
+                    //String[] playerlist_to_add = Arrays.copyOfRange(args, 1, args.length);
                     String[] playerlist_to_add = new String[args.length - 1];
-                    for(int i = 0; i < args.length - 1; ++i) {
-                        playerlist_to_add[i] = args[i + 1];
+                    for(int i = 1; i < args.length; ++i) {
+                        playerlist_to_add[i - 1] = args[i];
                     }
 
                     // Execute
@@ -491,9 +518,10 @@ public class WhitelistCommand implements CommandExecutor {
                     }
 
                     // Retrieve arguments for this subcommand
+                    //String[] playerlist_to_remove = Arrays.copyOfRange(args, 1, args.length);
                     String[] playerlist_to_remove = new String[args.length - 1];
-                    for(int i = 0; i < args.length - 1; ++i) {
-                        playerlist_to_remove[i] = args[i + 1];
+                    for(int i = 1; i < args.length; ++i) {
+                        playerlist_to_remove[i - 1] = args[i];
                     }
 
                     // Execute
@@ -516,11 +544,16 @@ public class WhitelistCommand implements CommandExecutor {
                         break;      // Command sender has no list permission to execute
                     }
 
-                    // Retrieve additional argument
-                    String argument = (args.length < 2) ? "p:1" : args[1];
+                    // Retrieve additional arguments
+                    //String argument = (args.length < 2) ? "p:1" : args[1];
+                    //String[] arguments = Arrays.copyOfRange(args, 1, args.length);
+                    String[] arguments = new String[args.length - 1];
+                    for(int i = 1; i < args.length; ++i) {
+                        arguments[i - 1] = args[i];
+                    }
 
                     // Execute
-                    subcommandList(sender, argument);
+                    subcommandList(sender, arguments);
                     break;
                 case "lang":        // Check or change language
                     // Check admin permission

@@ -1,0 +1,19 @@
+whitelist {
+    on;
+    off;
+    list;
+    add {
+        player brigadier:string greedy_phrase;
+    }
+    remove {
+        player brigadier:string greedy_phrase;
+    }
+    status;
+    reload;
+    lang {
+        cs;
+        en;
+    }
+    import;
+    version;
+}

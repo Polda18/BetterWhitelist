@@ -1,4 +1,4 @@
-package cz.czghost.mcspigot.betterwhitelist.utils;
+package cz.czghost.betterwhitelist.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

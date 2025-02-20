@@ -1,10 +1,10 @@
-package cz.czghost.mcspigot.betterwhitelist.config;
+package cz.czghost.betterwhitelist.config;
 
-import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
-import cz.czghost.mcspigot.betterwhitelist.utils.AlreadyInWhitelistException;
-import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
-import cz.czghost.mcspigot.betterwhitelist.utils.OnlineUUIDException;
-import cz.czghost.mcspigot.betterwhitelist.utils.UUIDGenerator;
+import cz.czghost.betterwhitelist.BetterWhitelist;
+import cz.czghost.betterwhitelist.utils.AlreadyInWhitelistException;
+import cz.czghost.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.betterwhitelist.utils.OnlineUUIDException;
+import cz.czghost.betterwhitelist.utils.UUIDGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 

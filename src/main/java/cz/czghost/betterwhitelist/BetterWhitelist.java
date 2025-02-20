@@ -1,11 +1,11 @@
-package cz.czghost.mcspigot.betterwhitelist;
+package cz.czghost.betterwhitelist;
 
-import cz.czghost.mcspigot.betterwhitelist.commands.Autocomplete;
-import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
-import cz.czghost.mcspigot.betterwhitelist.commands.WhitelistCommand;
-import cz.czghost.mcspigot.betterwhitelist.config.Language;
-import cz.czghost.mcspigot.betterwhitelist.config.Whitelist;
-import cz.czghost.mcspigot.betterwhitelist.events.EventsListener;
+import cz.czghost.betterwhitelist.commands.Autocomplete;
+import cz.czghost.betterwhitelist.commands.WhitelistCommand;
+import cz.czghost.betterwhitelist.config.Language;
+import cz.czghost.betterwhitelist.config.Whitelist;
+import cz.czghost.betterwhitelist.events.EventsListener;
+import cz.czghost.betterwhitelist.utils.InvalidEntryException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;

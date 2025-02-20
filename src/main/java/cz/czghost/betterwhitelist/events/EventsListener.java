@@ -1,15 +1,13 @@
-package cz.czghost.mcspigot.betterwhitelist.events;
+package cz.czghost.betterwhitelist.events;
 
-import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
-import cz.czghost.mcspigot.betterwhitelist.utils.AlreadyInWhitelistException;
-import cz.czghost.mcspigot.betterwhitelist.utils.InvalidEntryException;
-import cz.czghost.mcspigot.betterwhitelist.utils.OnlineUUIDException;
-import org.bukkit.BanList;
+import cz.czghost.betterwhitelist.BetterWhitelist;
+import cz.czghost.betterwhitelist.utils.AlreadyInWhitelistException;
+import cz.czghost.betterwhitelist.utils.InvalidEntryException;
+import cz.czghost.betterwhitelist.utils.OnlineUUIDException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;

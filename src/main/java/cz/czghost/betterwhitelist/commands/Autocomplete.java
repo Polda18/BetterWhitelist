@@ -1,15 +1,18 @@
-package cz.czghost.mcspigot.betterwhitelist.commands;
+package cz.czghost.betterwhitelist.commands;
 
-import cz.czghost.mcspigot.betterwhitelist.BetterWhitelist;
+import cz.czghost.betterwhitelist.BetterWhitelist;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
@@ -49,9 +52,25 @@ public class Autocomplete implements TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "add":         // User wants to add a player to whitelist
                     if (isConsole || sender.hasPermission("betterwhitelist.add")) {
-                        if (args[args.length - 1].isEmpty())
-                            list.add("ExamplePlayer");      // Give an example player :)
-                        else list.add(args[args.length - 1]);
+                        // Get all online players
+                        Collection<? extends Player> playersList = plugin.getServer().getOnlinePlayers();
+
+                        if(playersList.isEmpty())
+                            // List of players is empty, give an example player
+                            list.add("ExamplePlayer");
+                        else {
+                            try {
+                                for (Player player : (Player[]) playersList.toArray())
+                                    list.add(player.getName());
+                            } catch(Exception e) {
+                                plugin.getLogger().log(Level.WARNING, e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+
+                        // Return collection of matching names that contain the provided sequence
+                        list = (ArrayList<String>) list.stream()
+                                .filter(s -> s.contains(args[args.length - 1])).collect(Collectors.toList());
                     } else {
                         return null;
                     }
@@ -61,8 +80,9 @@ public class Autocomplete implements TabCompleter {
                         // Get all whitelisted players
                         list.addAll(plugin.getWhitelist().getConfig().getKeys(false));
 
+                        // Return collection of matching names that contain entered name
                         list = (ArrayList<String>) list.stream()
-                                .filter(s -> s.startsWith(args[args.length - 1])).collect(Collectors.toList());
+                                .filter(s -> s.contains(args[args.length - 1])).collect(Collectors.toList());
                     } else {
                         return null;
                     }
@@ -73,7 +93,7 @@ public class Autocomplete implements TabCompleter {
                         list.addAll(plugin.listAvailableLanguages().keySet());
 
                         list = (ArrayList<String>) list.stream()
-                                .filter(s -> s.startsWith(args[1])).collect(Collectors.toList());
+                                .filter(s -> s.contains(args[1])).collect(Collectors.toList());
                     } else {
                         return null;
                     }
@@ -84,7 +104,7 @@ public class Autocomplete implements TabCompleter {
                         list.add("p:");
 
                         list = (ArrayList<String>) list.stream()
-                                .filter(s -> s.startsWith(args[1])).collect(Collectors.toList());
+                                .filter(s -> s.contains(args[1])).collect(Collectors.toList());
                     } else {
                         return null;
                     }
@@ -110,13 +130,12 @@ public class Autocomplete implements TabCompleter {
                 list.add("remove");     // Add to list only if command sender has remove permission
             if (isConsole || sender.hasPermission("betterwhitelist.list"))
                 list.add("list");       // Add to list only if command sender has list permission
-            if (list.isEmpty()) {
+            if (list.isEmpty())
                 return null;            // If the list is empty (sender has no permission), no list is given
-            }
 
             // List is not empty, filter through start of the argument
             list = (ArrayList<String>) list.stream()
-                    .filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
+                    .filter(s -> s.contains(args[0])).collect(Collectors.toList());
         }
 
         return list;

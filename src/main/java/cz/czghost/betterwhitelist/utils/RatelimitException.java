@@ -1,4 +1,4 @@
-package cz.czghost.mcspigot.betterwhitelist.utils;
+package cz.czghost.betterwhitelist.utils;
 
 public class RatelimitException extends RuntimeException {
     private final int retryAfter;

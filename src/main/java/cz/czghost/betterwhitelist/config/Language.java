@@ -1,4 +1,4 @@
-package cz.czghost.mcspigot.betterwhitelist.config;
+package cz.czghost.betterwhitelist.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -9,6 +9,9 @@
 #
 #-----------------------------------------------------------------
 
+# DO NOT MODIFY THIS PROPERTY! THIS IS USED TO DETERMINE CONFIG VERSION!
+version: 3
+
 # Language specification (localized language name)
 name: 'Čeština'
 
@@ -29,6 +32,8 @@ name: 'Čeština'
 
 # You can also use these variables:
 # (player) - refers to operated player
+# (old_player) - refers to old player name
+# (new_player) - refers to new player name
 # (language) - refers to currently selected language
 # (mojang) - refers to whether player was found in Mojang's database or not (case insensitive)
 # (status) - refers to whitelist status
@@ -74,7 +79,7 @@ messages:
     language: '&cZvolený jazyk není k dispozici.'
     ratelimit: '&cJsi příliš rychlý/-á. Počkej, prosím, (retry_time) sekund a zkus to znovu.'
   usage:
-    - '&7Použití: /wl &a<subcommand> &e[entry]'
+    - '&7Použití: /wl &a<podpříkaz> &e[argument]'
     - '&8&o  - &6on &5&o=> &7zapíná whitelist (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6off &5&o=> &7vypíná whitelist (oprávnění &2&lbetterwhitelist.admin&7)'
     - '&8&o  - &6add &e<playername> &5&o=> &7přidává hráče do whitelistu (oprávnění &2&lbetterwhitelist.add&7)'

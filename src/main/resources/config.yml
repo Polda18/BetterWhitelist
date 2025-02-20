@@ -8,7 +8,9 @@
 #
 #
 #-----------------------------------------------------------------
-version: '1.1.0-beta1'
+
+# DO NOT MODIFY THIS PROPERTY! THIS IS USED TO DETERMINE CONFIG VERSION!
+version: 3
 
 # Language selection
 language: en
@@ -23,3 +25,7 @@ enabled: false
 # at https://minecraft.fandom.com/wiki/Formatting_codes (make sure to replace the '§' with '&' - excluding apostrophes)
 custom-kick-message-enabled: false
 custom-kick-message: '&cYou are not whitelisted! Please visit our Discord at &ehttps://discord.gg/yourinvite &cand apply to be whitelisted.&r'
+
+# Bungee Mode
+# If enabled, plugin will assume the server is part of an online mode BungeeCord network.
+bungee-mode: false
